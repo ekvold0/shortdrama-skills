@@ -1,0 +1,1962 @@
+[
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "一、基础八大核心情绪表情（8条）",
+  "n": 1,
+  "title": "真实微笑（杜乡微笑·真愉悦）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "一、基础八大核心情绪表情（8条）",
+  "n": 2,
+  "title": "社交微笑（礼仪假笑）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "一、基础八大核心情绪表情（8条）",
+  "n": 3,
+  "title": "悲伤沮丧"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "一、基础八大核心情绪表情（8条）",
+  "n": 4,
+  "title": "愤怒"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "一、基础八大核心情绪表情（8条）",
+  "n": 5,
+  "title": "恐惧"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "一、基础八大核心情绪表情（8条）",
+  "n": 6,
+  "title": "惊讶"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "一、基础八大核心情绪表情（8条）",
+  "n": 7,
+  "title": "厌恶"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "一、基础八大核心情绪表情（8条）",
+  "n": 8,
+  "title": "轻蔑（唯一不对称基础情绪）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "二、十大核心微表情（瞬态泄露·10条）",
+  "n": 1,
+  "title": "微愤怒"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "二、十大核心微表情（瞬态泄露·10条）",
+  "n": 2,
+  "title": "微恐惧"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "二、十大核心微表情（瞬态泄露·10条）",
+  "n": 3,
+  "title": "微悲伤"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "二、十大核心微表情（瞬态泄露·10条）",
+  "n": 4,
+  "title": "微厌恶"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "二、十大核心微表情（瞬态泄露·10条）",
+  "n": 5,
+  "title": "微惊喜"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "二、十大核心微表情（瞬态泄露·10条）",
+  "n": 6,
+  "title": "微蔑视"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "二、十大核心微表情（瞬态泄露·10条）",
+  "n": 7,
+  "title": "微愉悦"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "二、十大核心微表情（瞬态泄露·10条）",
+  "n": 8,
+  "title": "微痛苦"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "二、十大核心微表情（瞬态泄露·10条）",
+  "n": 9,
+  "title": "微困惑"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "二、十大核心微表情（瞬态泄露·10条）",
+  "n": 10,
+  "title": "微警觉"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 1,
+  "title": "苦涩微笑（笑中带痛）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 2,
+  "title": "愤怒之泪（悲愤）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 3,
+  "title": "恐惧微笑（讨好式害怕）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 4,
+  "title": "惊喜微笑（喜出望外）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 5,
+  "title": "悲伤平静（释然沉落）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 6,
+  "title": "厌恶好奇（又怕又想看）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 7,
+  "title": "蔑视愉悦（幸灾乐祸）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 8,
+  "title": "焦虑微笑（紧张客套笑）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 9,
+  "title": "坚毅（笃定沉稳）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 10,
+  "title": "渴望（遥望期盼）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 11,
+  "title": "羞耻（想躲藏）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 12,
+  "title": "怀疑（审视不信任）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 13,
+  "title": "无助（茫然求助）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 14,
+  "title": "狂喜（情绪峰值）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "三、复合复杂情绪表情（15条）",
+  "n": 15,
+  "title": "麻木（情绪关停）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "四、伪装与欺骗表情（9条）",
+  "n": 1,
+  "title": "压抑愤怒（隐忍怒意）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "四、伪装与欺骗表情（9条）",
+  "n": 2,
+  "title": "假装悲伤"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "四、伪装与欺骗表情（9条）",
+  "n": 3,
+  "title": "假装恐惧"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "四、伪装与欺骗表情（9条）",
+  "n": 4,
+  "title": "假装微笑（标准假笑）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "四、伪装与欺骗表情（9条）",
+  "n": 5,
+  "title": "情绪替换（表里相反）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "四、伪装与欺骗表情（9条）",
+  "n": 6,
+  "title": "表情过度（浮夸表演）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "四、伪装与欺骗表情（9条）",
+  "n": 7,
+  "title": "不对称表情（情绪不纯）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "四、伪装与欺骗表情（9条）",
+  "n": 8,
+  "title": "表情闪切（情绪撕裂）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "四、伪装与欺骗表情（9条）",
+  "n": 9,
+  "title": "延迟表情（反应慢半拍）"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "五、动态时序表情特征（8条）",
+  "n": 1,
+  "title": "表情起始速度"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "五、动态时序表情特征（8条）",
+  "n": 2,
+  "title": "表情消退速度"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "五、动态时序表情特征（8条）",
+  "n": 3,
+  "title": "表情顶点时长"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "五、动态时序表情特征（8条）",
+  "n": 4,
+  "title": "动态不对称变化"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "五、动态时序表情特征（8条）",
+  "n": 5,
+  "title": "表情切换速度"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "五、动态时序表情特征（8条）",
+  "n": 6,
+  "title": "持续微情绪底色"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "五、动态时序表情特征（8条）",
+  "n": 7,
+  "title": "表情言语同步性"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "五、动态时序表情特征（8条）",
+  "n": 8,
+  "title": "表情衰减曲线"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "六、极端状态表情（8条）",
+  "n": 1,
+  "title": "惊恐发作"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "六、极端状态表情（8条）",
+  "n": 2,
+  "title": "崩溃痛哭"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "六、极端状态表情（8条）",
+  "n": 3,
+  "title": "失控狂笑"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "六、极端状态表情（8条）",
+  "n": 4,
+  "title": "面部冻结"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "六、极端状态表情（8条）",
+  "n": 5,
+  "title": "神经性抽搐"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "六、极端状态表情（8条）",
+  "n": 6,
+  "title": "解离失神"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "六、极端状态表情（8条）",
+  "n": 7,
+  "title": "极致痛苦"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "六、极端状态表情（8条）",
+  "n": 8,
+  "title": "愉悦巅峰"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "七、高阶微妙社交表情（8条）",
+  "n": 1,
+  "title": "默契会心笑"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "七、高阶微妙社交表情（8条）",
+  "n": 2,
+  "title": "社交尴尬笑"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "七、高阶微妙社交表情（8条）",
+  "n": 3,
+  "title": "笑容渐褪"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "七、高阶微妙社交表情（8条）",
+  "n": 4,
+  "title": "礼貌倾听表情"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "七、高阶微妙社交表情（8条）",
+  "n": 5,
+  "title": "偷看被抓表情"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "七、高阶微妙社交表情（8条）",
+  "n": 6,
+  "title": "挑衅玩味笑"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "七、高阶微妙社交表情（8条）",
+  "n": 7,
+  "title": "无奈苦笑"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "七、高阶微妙社交表情（8条）",
+  "n": 8,
+  "title": "自嘲微笑"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "八、东方含蓄表情特质（5条）",
+  "n": 1,
+  "title": "东亚内敛微笑"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "八、东方含蓄表情特质（5条）",
+  "n": 2,
+  "title": "舞台夸张表情"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "八、东方含蓄表情特质（5条）",
+  "n": 3,
+  "title": "扑克脸稳态"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "八、东方含蓄表情特质（5条）",
+  "n": 4,
+  "title": "平静灵性表情"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "八、东方含蓄表情特质（5条）",
+  "n": 5,
+  "title": "忍痛微笑"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "九、镜头运镜+表情叙事体系（10条）",
+  "n": 1,
+  "title": "微距推近抓微表情"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "九、镜头运镜+表情叙事体系（10条）",
+  "n": 2,
+  "title": "焦点呼吸式情绪解码"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "九、镜头运镜+表情叙事体系（10条）",
+  "n": 3,
+  "title": "环绕立体表情展示"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "九、镜头运镜+表情叙事体系（10条）",
+  "n": 4,
+  "title": "双人正反打表情对照"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "九、镜头运镜+表情叙事体系（10条）",
+  "n": 5,
+  "title": "慢动作表情生成"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "九、镜头运镜+表情叙事体系（10条）",
+  "n": 6,
+  "title": "荷兰角扭曲情绪"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "九、镜头运镜+表情叙事体系（10条）",
+  "n": 7,
+  "title": "快切微表情序列"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "九、镜头运镜+表情叙事体系（10条）",
+  "n": 8,
+  "title": "推进渐强情绪"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "九、镜头运镜+表情叙事体系（10条）",
+  "n": 9,
+  "title": "拉出情绪消退"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "九、镜头运镜+表情叙事体系（10条）",
+  "n": 10,
+  "title": "顶点冻结帧"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "十、高阶组合情绪法则（5条）",
+  "n": 1,
+  "title": "脸身情绪错位"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "十、高阶组合情绪法则（5条）",
+  "n": 2,
+  "title": "言行表情错位"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "十、高阶组合情绪法则（5条）",
+  "n": 3,
+  "title": "群体情绪同步"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "十、高阶组合情绪法则（5条）",
+  "n": 4,
+  "title": "面具碎裂"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "十、高阶组合情绪法则（5条）",
+  "n": 5,
+  "title": "镜像共情表情"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "十、高阶组合情绪法则（5条）",
+  "n": 6,
+  "title": "多层情绪叠加"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "十、高阶组合情绪法则（5条）",
+  "n": 7,
+  "title": "情绪渐变转场"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "十、高阶组合情绪法则（5条）",
+  "n": 8,
+  "title": "长时间静态表情凝固"
+ },
+ {
+  "kind": "face",
+  "genre": null,
+  "section": "十、高阶组合情绪法则（5条）",
+  "n": 9,
+  "title": "面部血色情绪变化"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 1,
+  "title": "信息传递型对话（Information Delivery Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 2,
+  "title": "情感表达型对话（Emotional Expression Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 3,
+  "title": "权力博弈型对话（Power Play Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 4,
+  "title": "幽默型对话（Humorous Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 5,
+  "title": "威胁型对话（Threatening Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 6,
+  "title": "表白型对话（Confession Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 7,
+  "title": "安慰型对话（Comforting Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 8,
+  "title": "争执型对话（Argument Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 9,
+  "title": "试探型对话（Probing Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 10,
+  "title": "命令型对话（Command Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 11,
+  "title": "说服型对话（Persuasive Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 12,
+  "title": "忏悔型对话（Confession of Guilt）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 13,
+  "title": "告别型对话（Farewell Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 14,
+  "title": "宣战型对话（Declaration of War）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "一、对话功能类型（15条）",
+  "n": 15,
+  "title": "日常闲聊（Casual Small Talk）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 1,
+  "title": "简洁冷峻型（Terse and Stoic）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 2,
+  "title": "喋喋不休型（Chatty）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 3,
+  "title": "文绉绉型（Erudite/Scholarly）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 4,
+  "title": "市井粗口型（Street Slang/Vulgar）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 5,
+  "title": "诗化型（Poetic）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 6,
+  "title": "沉默寡言型（Near-Silent）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 7,
+  "title": "讽刺挖苦型（Sarcastic）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 8,
+  "title": "结巴或不流畅型（Stammering）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 9,
+  "title": "权威型（Authoritative）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 10,
+  "title": "撒娇或卖萌型（Cutesy）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 11,
+  "title": "语重心长型（Earnest Advice）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 12,
+  "title": "官方或外交辞令型（Diplomatic）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 13,
+  "title": "神经质型（Neurotic）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 14,
+  "title": "慢条斯理型（Slow and Deliberate）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "二、对白风格（15条）",
+  "n": 15,
+  "title": "奶凶或傲娇型（Tsundere）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "三、潜台词技巧（10条）",
+  "n": 1,
+  "title": "言不由衷（Saying One Thing Meaning Another）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "三、潜台词技巧（10条）",
+  "n": 2,
+  "title": "避重就轻（Avoiding the Real Issue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "三、潜台词技巧（10条）",
+  "n": 3,
+  "title": "答非所问（Non Sequitur Response）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "三、潜台词技巧（10条）",
+  "n": 4,
+  "title": "暗示（Innuendo）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "三、潜台词技巧（10条）",
+  "n": 5,
+  "title": "反话（Irony）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "三、潜台词技巧（10条）",
+  "n": 6,
+  "title": "留白（Deliberate Omission）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "三、潜台词技巧（10条）",
+  "n": 7,
+  "title": "话中有话（Hidden Meaning）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "三、潜台词技巧（10条）",
+  "n": 8,
+  "title": "过度解释（Over-explaining）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "三、潜台词技巧（10条）",
+  "n": 9,
+  "title": "明知故问（Rhetorical Question）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "三、潜台词技巧（10条）",
+  "n": 10,
+  "title": "默认与回避（Tacit Agreement）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "四、对话节奏（10条）",
+  "n": 1,
+  "title": "快问快答（Rapid-Fire）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "四、对话节奏（10条）",
+  "n": 2,
+  "title": "长停顿（Long Pause）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "四、对话节奏（10条）",
+  "n": 3,
+  "title": "打断（Interruption）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "四、对话节奏（10条）",
+  "n": 4,
+  "title": "重叠对话（Overlapping Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "四、对话节奏（10条）",
+  "n": 5,
+  "title": "渐弱（Trailing Off）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "四、对话节奏（10条）",
+  "n": 6,
+  "title": "渐强（Building Intensity）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "四、对话节奏（10条）",
+  "n": 7,
+  "title": "节奏突变（Rhythm Break）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "四、对话节奏（10条）",
+  "n": 8,
+  "title": "重复（Repetition）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "四、对话节奏（10条）",
+  "n": 9,
+  "title": "话轮转换（Turn-Taking）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "四、对话节奏（10条）",
+  "n": 10,
+  "title": "终结性沉默（Terminal Silence）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "五、独白与旁白（10条）",
+  "n": 1,
+  "title": "内心独白（Inner Monologue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "五、独白与旁白（10条）",
+  "n": 2,
+  "title": "开场旁白（Opening Narration）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "五、独白与旁白（10条）",
+  "n": 3,
+  "title": "结尾旁白（Closing Narration）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "五、独白与旁白（10条）",
+  "n": 4,
+  "title": "书信朗读（Letter Reading）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "五、独白与旁白（10条）",
+  "n": 5,
+  "title": "日记朗读（Diary Narration）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "五、独白与旁白（10条）",
+  "n": 6,
+  "title": "回忆叙述（Memory Narration）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "五、独白与旁白（10条）",
+  "n": 7,
+  "title": "第三人称全知旁白（Omniscient Narration）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "五、独白与旁白（10条）",
+  "n": 8,
+  "title": "角色间切换旁白（Shifting POV Narration）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "五、独白与旁白（10条）",
+  "n": 9,
+  "title": "舞台独白（Stage Monologue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "五、独白与旁白（10条）",
+  "n": 10,
+  "title": "电话留言（Voicemail Message）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "六、特定场景台词（10条）",
+  "n": 1,
+  "title": "审讯室台词（Interrogation Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "六、特定场景台词（10条）",
+  "n": 2,
+  "title": "谈判台词（Negotiation Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "六、特定场景台词（10条）",
+  "n": 3,
+  "title": "告白台词（Confession of Love）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "六、特定场景台词（10条）",
+  "n": 4,
+  "title": "告别台词（Farewell Words）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "六、特定场景台词（10条）",
+  "n": 5,
+  "title": "宣战或决裂台词（Declaration of War）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "六、特定场景台词（10条）",
+  "n": 6,
+  "title": "忏悔台词（Confession of Guilt）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "六、特定场景台词（10条）",
+  "n": 7,
+  "title": "鼓舞士气台词（Inspirational Speech）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "六、特定场景台词（10条）",
+  "n": 8,
+  "title": "临终遗言（Last Words）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "六、特定场景台词（10条）",
+  "n": 9,
+  "title": "重逢台词（Reunion Dialogue）"
+ },
+ {
+  "kind": "dialogue",
+  "genre": null,
+  "section": "六、特定场景台词（10条）",
+  "n": 10,
+  "title": "自我介绍台词（Self-Introduction）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 1,
+  "title": "环境音底噪（Ambient Bed）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 2,
+  "title": "脚步声（Footsteps）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 3,
+  "title": "呼吸声（Breathing）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 4,
+  "title": "心跳声（Heartbeat）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 5,
+  "title": "风声（Wind）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 6,
+  "title": "雨声（Rain）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 7,
+  "title": "雷声（Thunder）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 8,
+  "title": "金属碰撞声（Metal Clash）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 9,
+  "title": "玻璃破碎声（Glass Shatter）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 10,
+  "title": "门声（Door Sounds）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 11,
+  "title": "武器出鞘声（Weapon Draw）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 12,
+  "title": "枪声（Gunshot）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 13,
+  "title": "爆炸声（Explosion）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 14,
+  "title": "水声（Water Sounds）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 15,
+  "title": "动物声（Animal Sounds）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 16,
+  "title": "机械声（Mechanical Sounds）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 17,
+  "title": "火焰声（Fire Sounds）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 18,
+  "title": "纸张或布料声（Paper/Fabric Sounds）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 19,
+  "title": "身体接触声（Body Impact）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "一、音效类型（20条）",
+  "n": 20,
+  "title": "环境音景（Soundscape）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 1,
+  "title": "近景声（Close Sound）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 2,
+  "title": "远景声（Distant Sound）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 3,
+  "title": "声音透视（Sound Perspective）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 4,
+  "title": "混响空间（Reverb Space）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 5,
+  "title": "立体声或环绕（Stereo/Surround）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 6,
+  "title": "声音淡入淡出（Sound Fade In/Out）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 7,
+  "title": "声音叠加（Sound Layering）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 8,
+  "title": "声音隔离（Sound Isolation）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 9,
+  "title": "声音延迟（Sound Delay）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 10,
+  "title": "声音前置（Sound Lead）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 11,
+  "title": "降噪或静音效果（Noise Reduction/Silence）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 12,
+  "title": "主观声音（Subjective Sound）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 13,
+  "title": "声音对比（Sound Contrast）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 14,
+  "title": "循环声（Looping Sound）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "二、声音空间与混音（15条）",
+  "n": 15,
+  "title": "声音蒙太奇（Sound Montage）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 1,
+  "title": "声画同步（Sound-Image Synchronization）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 2,
+  "title": "声画对位（Sound-Image Counterpoint）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 3,
+  "title": "画外音（Voice-over）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 4,
+  "title": "声音前置或后置（Sound Lead/Lag）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 5,
+  "title": "音乐叙事（Diegetic Music）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 6,
+  "title": "非叙事音乐（Non-diegetic Music）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 7,
+  "title": "声音为情绪服务（Sound Serving Emotion）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 8,
+  "title": "声音为节奏服务（Sound Serving Rhythm）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 9,
+  "title": "声音为叙事服务（Sound Serving Narrative）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 10,
+  "title": "声音标记（Sound Motif）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 11,
+  "title": "声音对比蒙太奇（Sound Contrast Montage）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 12,
+  "title": "声音淡入场景（Audio Fade-in Scene）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 13,
+  "title": "声音后置余韵（Audio Lag Resonance）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 14,
+  "title": "声音突然中断（Sound Abrupt Cut）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "三、声音与画面关系（15条）",
+  "n": 15,
+  "title": "声音渐强（Crescendo）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "四、特殊声音效果（10条）",
+  "n": 1,
+  "title": "耳鸣效果（Tinnitus Effect）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "四、特殊声音效果（10条）",
+  "n": 2,
+  "title": "水下声音（Underwater Sound）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "四、特殊声音效果（10条）",
+  "n": 3,
+  "title": "慢动作声音（Slow Motion Sound）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "四、特殊声音效果（10条）",
+  "n": 4,
+  "title": "快速声音（Fast Motion Sound）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "四、特殊声音效果（10条）",
+  "n": 5,
+  "title": "回声重复（Echo Repetition）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "四、特殊声音效果（10条）",
+  "n": 6,
+  "title": "声音扭曲（Sound Distortion）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "四、特殊声音效果（10条）",
+  "n": 7,
+  "title": "电话或录音音质（Phone/Recording Filter）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "四、特殊声音效果（10条）",
+  "n": 8,
+  "title": "收音机或广播音质（Radio/Broadcast Filter）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "四、特殊声音效果（10条）",
+  "n": 9,
+  "title": "空间旋转声音（Rotating Sound）"
+ },
+ {
+  "kind": "sound",
+  "genre": null,
+  "section": "四、特殊声音效果（10条）",
+  "n": 10,
+  "title": "静默设计（Designed Silence）"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 1,
+  "title": "高密度打脸快剪"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 2,
+  "title": "冷峻夜戏悬疑调度"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 3,
+  "title": "多视角复述剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 4,
+  "title": "多线三线交叉剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 5,
+  "title": "时间循环悬念剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 6,
+  "title": "地域写实意象构图"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 7,
+  "title": "古装权谋群像压抑构图"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 8,
+  "title": "仙侠唯美国风特效调度"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 9,
+  "title": "武侠写意极简构图"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 10,
+  "title": "视觉化推理剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 11,
+  "title": "纪实扫黑群像调度"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 12,
+  "title": "生活流都市群像调度"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 13,
+  "title": "单元奇案结构剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "网剧",
+  "section": "一、网剧与短剧分镜切镜技法（14条）",
+  "n": 14,
+  "title": "职业空间快节奏调度"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 1,
+  "title": "封闭空间心理视点剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 2,
+  "title": "定格与对称构图"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 3,
+  "title": "多线史诗交叉调度"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 4,
+  "title": "梦境超现实调度"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 5,
+  "title": "纪实长镜社会切片"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 6,
+  "title": "超长镜头一镜到底"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 7,
+  "title": "分屏多画面实时叙事"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 8,
+  "title": "思维可视化字幕推理"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 9,
+  "title": "慢镜走秀酷感调度"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 10,
+  "title": "打破第四面墙直视镜头"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 11,
+  "title": "手持晃动权力压迫"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 12,
+  "title": "符号化色彩构图"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 13,
+  "title": "伪纪录手持喜剧"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 14,
+  "title": "多机位情景喜剧切换"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 15,
+  "title": "长镜走位快语速对白"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 16,
+  "title": "跨时空双线对讲"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 17,
+  "title": "无表情主角冷峻心理"
+ },
+ {
+  "kind": "edit",
+  "genre": "电视剧",
+  "section": "二、电视剧分镜切镜技法（18条）",
+  "n": 18,
+  "title": "音乐驱动主观霓虹剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 1,
+  "title": "浮世绘国风战斗高速剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 2,
+  "title": "立体机动动态分镜"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 3,
+  "title": "智斗心理战分镜"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 4,
+  "title": "符号构图与快速字幕"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 5,
+  "title": "戏中戏无缝转场"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 6,
+  "title": "幻觉现实断裂剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 7,
+  "title": "梦境入侵超现实变形"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 8,
+  "title": "比赛运动动态分镜"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 9,
+  "title": "三渲二转描长镜"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 10,
+  "title": "留白空镜静观"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 11,
+  "title": "心理状态可视化"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 12,
+  "title": "电影感镜头质感"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 13,
+  "title": "演奏演唱肢体特写"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 14,
+  "title": "高密度平行世界剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 15,
+  "title": "狂放变形作画调度"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 16,
+  "title": "奇幻流动调度"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 17,
+  "title": "双线交叉身份时空"
+ },
+ {
+  "kind": "edit",
+  "genre": "动漫",
+  "section": "三、动漫与动画分镜切镜技法（18条）",
+  "n": 18,
+  "title": "夸张喜剧节奏剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "通用",
+  "section": "四、跨体裁通用切镜节奏法则（10条）",
+  "n": 1,
+  "title": "动作匹配剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "通用",
+  "section": "四、跨体裁通用切镜节奏法则（10条）",
+  "n": 2,
+  "title": "声音桥接剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "通用",
+  "section": "四、跨体裁通用切镜节奏法则（10条）",
+  "n": 3,
+  "title": "交叉平行剪辑"
+ },
+ {
+  "kind": "edit",
+  "genre": "通用",
+  "section": "四、跨体裁通用切镜节奏法则（10条）",
+  "n": 4,
+  "title": "蒙太奇压缩"
+ },
+ {
+  "kind": "edit",
+  "genre": "通用",
+  "section": "四、跨体裁通用切镜节奏法则（10条）",
+  "n": 5,
+  "title": "反应镜头节奏"
+ },
+ {
+  "kind": "edit",
+  "genre": "通用",
+  "section": "四、跨体裁通用切镜节奏法则（10条）",
+  "n": 6,
+  "title": "景别阶梯递进"
+ },
+ {
+  "kind": "edit",
+  "genre": "通用",
+  "section": "四、跨体裁通用切镜节奏法则（10条）",
+  "n": 7,
+  "title": "钩子剪辑开场结尾"
+ },
+ {
+  "kind": "edit",
+  "genre": "通用",
+  "section": "四、跨体裁通用切镜节奏法则（10条）",
+  "n": 8,
+  "title": "声画对位反差"
+ },
+ {
+  "kind": "edit",
+  "genre": "通用",
+  "section": "四、跨体裁通用切镜节奏法则（10条）",
+  "n": 9,
+  "title": "节奏曲线控制"
+ },
+ {
+  "kind": "edit",
+  "genre": "通用",
+  "section": "四、跨体裁通用切镜节奏法则（10条）",
+  "n": 10,
+  "title": "重复与变奏"
+ }
+]
