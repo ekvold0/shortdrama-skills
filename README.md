@@ -119,7 +119,7 @@ drama-pipeline-gate/
 
 ## 更新记录
 
-见 [CHANGELOG.md](CHANGELOG.md)。最近一次是 **2026-11-11**：接入八份写法库（关键词 41/42/48/55、分镜 43/44/46/47），机器校验扩到 CT09–CT12。
+见 [CHANGELOG.md](CHANGELOG.md)。最近一次是 **2026-11-11**：接入八份写法库（关键词 41/42/48/55、分镜 43/44/46/47），机器校验扩到 CT09–CT12。发版与打 tag 的流程见 [RELEASE.md](RELEASE.md)。
 
 ## 数据来源与许可
 
