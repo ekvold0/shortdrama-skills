@@ -115,7 +115,7 @@ python build_xlsx.py s01.json -o 归途_S01_分镜_v1.xlsx
 
 ## 技法层规则（CT 规则码）
 
-校验器在原有规则之外，追加 **CT00–CT08** 技法层规则，实现见 `ct_rules.py`（与另一技能同名文件内容一致）。
+校验器在原有规则之外，追加 **CT00–CT12** 技法层与写法层规则，实现见 `ct_rules.py`（与另一技能同名文件内容一致）。
 
 | 规则码 | 级别 | 触发条件 | 处理 |
 |---|---|---|---|
@@ -128,16 +128,21 @@ python build_xlsx.py s01.json -o 归途_S01_分镜_v1.xlsx
 | CT06 | error | 参考电影 >1 部或非《片名》年份格式 | 限 1 部，补年份 |
 | CT07 | error | 正文出现英文技法名（词表由 `cine_tech.json` 的 `en` 字段现生成，295 条） | 降维成中文可执行写法（55 §1 / 45 §2） |
 | CT08 | error | 出现 T4 禁投技法中文名（一镜到底/叠化/长镜/分屏/绿幕…共 32 条） | 改用 55 §7 等价替代；前置「无/禁/不/非/免」的否定写法不算命中 |
+| CT09 | error/warning | 关键词层 `movement` 既无运动轴也没写「固定」→ error；有轴但没写米/度/秒 → warning | 分镜层不查（禁量化），只在写关键词时补四要素（43 §1、关键词 41） |
+| CT10 | error/warning | 关键词层 `light` 缺色温 K 或光比 1:n → error；缺光位或光质 → warning | 按关键词 42 的四件套补；分镜层只写光位/光质/冷暖，不写数（44 §1） |
+| CT11 | error/warning | 钩子写法（黑场/倒放/静默/炸光…）出现在 `movement` 或机位列 → error/warning；**分镜层**首单元 0–2 秒、**关键词层**首组 0–2 秒内找不到任何钩子特征词 → warning | 钩子写进画面内容，首镜压到 ≤2 秒（46、关键词 48） |
+| CT12 | error | 参数里出现英制单位（ft / feet / inch / mph / yd） | 换成米/厘米（1ft≈0.3 米） |
 
 CT07 只扫镜头文本（机位、画面内容、style）；关键词层 `params` 里的英文参数（ARRI、f/2.8、roll）不参与英文名判定，但参与 T4 中文名判定（CT08）。
 
+**CT09/CT10 只查关键词层**——分镜层按「数值分层」禁量化（55 §8），写了 K 值和光比反而会被判越层，靠 `70-自检清单` 第三轮附 3G/3J 人工拦。CT11 两层口径不同但共用一份词表：分镜层读 `units[0]` 的 `duration` 累加，关键词层读 `groups[0]` 的 `dur` 累加（`_head_text` 两个字段都认）。
+
 ## 技法数据（cine_tech）
 
-`cine_tech.json`（300 条）是 grokfilm 技法库的**只读副本**，技能自带一份，放在 `scripts/` 下：
+`cine_tech.json`（300 条）是 grokfilm 技法库的**只读副本**，真源在工作区 `技法库整合/`：
 
 ```powershell
-# 技法库更新时，把新构建的 cine_tech.json 覆盖进本技能
-Copy-Item '<技法库整合>\cine_tech.json' '<本技能>\scripts\cine_tech.json' -Force
+Copy-Item 'F:\AI短剧\技法库整合\cine_tech.json' 'C:\Users\22718\.dsh\skills\<本技能>\...' -Force
 ```
 
 校验器启动时会比对 `count == 300`，不一致只报警告、不阻断（避免误伤历史交付）。改数据改真源后重跑构建，勿手改副本。

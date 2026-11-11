@@ -3,7 +3,7 @@
 
 用法：
     python scripts/build_xlsx.py work/《剧名》_S03_kwdata.json
-    python scripts/build_xlsx.py work/...json --out "out/《剧名》...xlsx"
+    python scripts/build_xlsx.py work/...json --out "F:\\AI短剧\\关键词脚本\\《剧名》\\...xlsx"
 
 设计：
 - 单一数据源：所有单元格都由 kwdata.json 派生，不在这里写死任何剧情。

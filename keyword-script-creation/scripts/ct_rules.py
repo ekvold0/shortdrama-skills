@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""grokfilm 技法层规则 CT01–CT06（两个技能共用同一份实现）
+"""grokfilm 技法层规则 CT01–CT12（两个技能共用同一份实现）
 
 被 storyboard-creation/scripts/verify.py 与 keyword-script-creation/scripts/verify.py 导入。
 两份文件内容必须完全一致（改规则请两边同步，见各自 README「技法层规则」）。
@@ -16,6 +16,17 @@
     CT04 单镜时长上限           —— 由各 verify.py 自身检查，此处不重复
     CT05 典故不入正文           —— 影史典故必须移入「参考电影」
     CT06 参考电影格式与数量      —— 《片名》年份，限 1 部
+    CT07 英文技法名             —— 必须降维成中文可执行写法
+    CT08 T4 禁投技法            —— 中文名出现在正面写法里即拦（否定写法放行）
+    CT09 运镜量化               —— 缺主运镜（error）；有轴无米/度/秒（warning）
+    CT10 光影四件套             —— 缺色温 K 或光比 1:n（error）；缺光位/光质（warning）
+    CT11 钩子落位               —— 钩子写法混进运镜字段（error）；首组首镜 2 秒内无钩子特征、手法定式写进机位列（warning）
+    CT12 英制单位               —— ft/inch/mph 等混进中文参数（error）
+
+    分层说明：CT09/CT10 只作用于关键词层（keywords 的 params/movement/light/shots），
+    分镜层按 45 §4「分镜层禁量化」不查运镜量化与光影数值。
+    CT11 两层都查但口径不同：关键词层看 groups[0] 的 0–2 秒，分镜层看 units[0] 的 0–2 秒
+    （镜头时长字段 keyword 层叫 dur、storyboard 层叫 duration，_head_text 两者都认）。
 """
 
 import re
@@ -32,13 +43,15 @@ VAGUE_WORDS = [
     "专业级", "工业级", "沉浸感",
 ]
 
-#: CT03 运动轴家族：同一家族内只算一个轴，跨家族 ≥2 即一镜多主运镜。
+#: CT03 运动轴家族：同一家族内只算一轴，跨家族 ≥2 即一镜多主运镜。
+#: 中文的省略写法（推镜头／拉镜头／移镜头／跟镜头）要算轴——实测历史交付里
+#: 这四种写法最多，只认「推近／推进／前推」会把它们误判成「缺主运镜」。
 MOVE_FAMILY = {
-    "推": ["推近", "推进", "前推"],
-    "拉": ["拉远", "后拉", "后拉远"],
+    "推": ["推近", "推进", "前推", "推镜"],
+    "拉": ["拉远", "后拉", "后拉远", "拉镜"],
     "摇": ["横摇", "上摇", "下摇", "竖摇", "摇镜"],
-    "移": ["横移", "平移"],
-    "跟": ["跟拍", "跟随"],
+    "移": ["横移", "平移", "移镜"],
+    "跟": ["跟拍", "跟随", "跟镜"],
     "升降": ["升降", "上升", "下降", "摇臂"],
     "环绕": ["环绕", "旋转"],
     "甩": ["甩镜"],
@@ -56,6 +69,37 @@ PARAM_LABEL = {
 }
 
 REF_PAT = re.compile(r"《([^》]+)》\s*(\d{4})?")
+
+#: CT09 运镜量化：有运动轴时，必须给出米/厘米/度/秒这类可执行量。
+MOVE_QUANT = re.compile(r"\d+(\.\d+)?\s*(米|厘米|毫米|度|cm|mm|m|秒)")
+
+#: CT10 光影四件套（写法库见 references/42-打光库.md）。
+#: 光位/光质缺失记 warning；色温 K 与光比 1:n 缺失记 error——模型侧这两项没有就是完全随机。
+LIGHT_POS = ("顶光", "侧光", "逆光", "背光", "正面光", "侧逆", "左上", "右上",
+             "左前", "右前", "左后", "右后", "左侧", "右侧", "上方", "下方",
+             "窗光", "环境光", "脚光", "底光", "主光")
+LIGHT_QUAL = ("硬光", "柔光", "散射", "漫射", "平行光", "点光", "面光",
+              "柔光箱", "反光板", "灯管", "频闪")
+LIGHT_K = re.compile(r"\d{3,5}\s*K", re.I)
+LIGHT_RATIO = re.compile(r"光比\s*1\s*[:：]\s*\d|1\s*[:：]\s*\d(\.\d+)?")
+
+#: CT11 钩子（写法库见 references/48-开场钩子.md）。
+#: 这些词属于首镜的画面/音效，塞进「运镜」字段就是错位；只放明确无歧义的几个。
+HOOK_IN_MOVE = ("黑场", "倒放", "静默", "炸光", "先声后影", "结果前置")
+#: 全片至少要有这些特征中的一个，否则大概率是忘了写钩子（warning，不阻断）。
+#: 「冲击事件词」是从 82 份历史交付里量出来的：只认 12 条模板名，误报 86.6%；
+#: 补上撞/摔/砸/耳光这类高精度事件词后降到 9.8%，剩下的基本是提取不到正文的旧文件。
+#: 注意：这词表里不许放「闪白」——它被 00 总纲和 verify 的 banned_trans 一起禁掉了，
+#: 一个本身违规的词不能算钩子命中（试跑第 3 集时发现过这处打架）。
+HOOK_FEATURE = HOOK_IN_MOVE + ("微距", "移焦", "睁眼", "色温突变", "高速入画",
+                               "反转机位", "尺度错位", "几何硬对比", "异物入镜", "反常动作",
+                               "撞击", "巨响", "摔", "砸", "耳光", "掐", "血", "碎",
+                               "断裂", "尖叫", "嘶吼", "惨叫", "泼", "溅", "打翻", "撕",
+                               "黑屏", "推门", "踹", "争抢", "抢夺", "倒地",
+                               "昏迷", "警报", "炸", "裂开", "绷断", "脱手")
+
+#: CT12 英制单位。口播写「10 英尺」可以，参数里写 10ft 就该换成米。
+IMPERIAL = re.compile(r"\d+(\.\d+)?\s*(ft|feet|foot|inch|mph|yd)\b", re.I)
 
 
 # ---------------------------------------------------------------- 工具
@@ -184,10 +228,89 @@ def _ct08(text, ref, out, where):
             break
 
 
+#: CT09 运镜量化：缺主运镜=error（模型会自己晃），有轴无量化=warning（晃多少不知道）
+def _ct09_move(value, ref, out, where):
+    text = _s(value).strip()
+    if not text:
+        return
+    fams = _move_families(text)
+    if not fams and "固定" not in text:
+        out.append({"level": "error", "code": "CT09", "ref": ref,
+                    "msg": "{}缺主运镜——既无运动轴（推/拉/摇/移/跟/升降/环绕/甩/变焦/俯仰）也没写「固定」".format(where)})
+    elif fams and not MOVE_QUANT.search(text):
+        out.append({"level": "warning", "code": "CT09", "ref": ref,
+                    "msg": "{}有运动轴（{}）但没量化——补米/度/秒，例如「推近 0.3 米，用时 2 秒」".format(
+                        where, "/".join(sorted(fams)))})
+
+
+#: CT10 光影四件套：色温 K 与光比 1:n 缺失=error，光位/光质缺失=warning
+def _ct10_light(value, ref, out, where):
+    text = _s(value).strip()
+    if not text:
+        return
+    hard, soft = [], []
+    if not LIGHT_K.search(text):
+        hard.append("色温(K)")
+    if not LIGHT_RATIO.search(text):
+        hard.append("光比(1:n)")
+    if not any(w in text for w in LIGHT_POS):
+        soft.append("光位")
+    if not any(w in text for w in LIGHT_QUAL):
+        soft.append("光质")
+    if hard:
+        out.append({"level": "error", "code": "CT10", "ref": ref,
+                    "msg": "{}缺 {}——光比与色温不给数，模型就是随机打光｜现文：{}".format(
+                        where, "/".join(hard), text[:36])})
+    if soft:
+        out.append({"level": "warning", "code": "CT10", "ref": ref,
+                    "msg": "{}缺 {}——建议按 42-打光库 的四件套补齐（光位＋光质＋色温＋光比）｜现文：{}".format(
+                        where, "/".join(soft), text[:36])})
+
+
+#: CT11 首段取样：一组里 0—2 秒覆盖到的镜头文本（含跨过 2 秒的那一镜）。
+#: 钩子只在这一段里判——全片扫等于「只要片里出现一个『撞』字就过」，测过了，太松。
+def _head_text(group, seconds=2.0):
+    """取一组/一个单元开头 N 秒的文本。分镜层镜头用 duration，关键词层用 dur。"""
+    buf, t = [], 0.0
+    for sh in (group.get("shots") or []):
+        if t >= seconds:
+            break
+        buf.append(_s(sh))
+        try:
+            t += float(sh.get("dur") or sh.get("duration") or 0)
+        except (TypeError, ValueError):
+            break
+    return " ".join(buf)
+
+
+#: CT11 钩子：钩子是首镜的画面/音效，不是运镜
+def _ct11_hook(value, ref, out, where):
+    text = _s(value).strip()
+    if not text:
+        return
+    for w in HOOK_IN_MOVE:
+        if w in text:
+            out.append({"level": "error", "code": "CT11", "ref": ref,
+                        "msg": "{}里出现钩子写法『{}』——钩子要落在首镜的画面主体/动作/音效上，不写进运镜字段（48 §6）".format(
+                            where, w)})
+            break
+
+
+#: CT12 英制单位：参数里给米，别给英尺
+def _ct12_units(value, ref, out, where):
+    text = _s(value).strip()
+    if not text:
+        return
+    m = IMPERIAL.search(text)
+    if m:
+        out.append({"level": "error", "code": "CT12", "ref": ref,
+                    "msg": "{}里出现英制单位『{}』——换成米/厘米（1ft≈0.3 米）".format(where, m.group(0).strip())})
+
+
 # ---------------------------------------------------------------- 分镜层
 
 def check_storyboard(data):
-    """分镜层校验：CT01/CT03/CT05/CT06。返回列表。"""
+    """分镜层校验：CT01/CT03/CT05/CT06/CT07/CT08/CT11/CT12。返回列表。"""
     out = []
     for u in (data.get("units") or []):
         uid = _s(u.get("id")) or "?"
@@ -211,13 +334,28 @@ def check_storyboard(data):
             _ct07(cam, sid, out, "机位与运镜")
             _ct07(con, sid, out, "画面内容")
             _ct08(cam + " " + con, sid, out, "机位与画面")
+            _ct12_units(cam + " " + con, sid, out, "机位与画面")
+            for w in HOOK_IN_MOVE:
+                if w in cam:
+                    out.append({"level": "warning", "code": "CT11", "ref": sid,
+                                "msg": "『{}』是手法定式，写进『画面内容』，不写进机位列（46 §6）".format(w)})
+                    break
+
+    units = data.get("units") or []
+    if units:
+        uid0 = _s(units[0].get("id")) or "U01"
+        head = _head_text(units[0], 2.0)
+        if head and not any(w in head for w in HOOK_FEATURE):
+            out.append({"level": "warning", "code": "CT11", "ref": uid0,
+                        "msg": "首单元前 2 秒没有钩子特征（微距/黑场炸光/高速入画/撞/摔/耳光…）"
+                               "——46 要求第一个画面就有异常，首镜压到 ≤2 秒"})
     return out
 
 
 # ---------------------------------------------------------------- 关键词层
 
 def check_keyword(data):
-    """关键词层校验：CT01/CT02/CT03/CT05/CT06。返回列表。"""
+    """关键词层校验：CT01/CT02/CT03/CT05/CT06/CT07/CT08/CT09/CT10/CT11/CT12。返回列表。"""
     out = []
     for i, g in enumerate(data.get("groups") or []):
         gid = _s(g.get("no")) or "#{}".format(i + 1)
@@ -237,6 +375,12 @@ def check_keyword(data):
         if idx and idx != sorted(idx):
             out.append({"level": "warning", "code": "CT02", "ref": gid,
                         "msg": "params 键序乱：应为 {}（45 §1）".format(" → ".join(PARAM_KEYS))})
+
+        # CT09/CT10/CT11/CT12：运镜量化、光影四件套、钩子落位、单位
+        _ct09_move(p.get("movement"), gid, out, "运镜")
+        _ct10_light(p.get("light"), gid, out, "光影")
+        _ct11_hook(p.get("movement"), gid, out, "运镜")
+        _ct12_units(_s(p), gid, out, "参数")
 
         # CT01 空泛词（params + 分镜文本）
         blob = _s(p) + " " + _s(g.get("makeup"))
@@ -261,8 +405,17 @@ def check_keyword(data):
                             "msg": "pic 里出现典故片名——典故只进 params.reference"})
             _ct07(cam + " " + pic + " " + _s(s.get("style")), sid, out, "分镜文本")
             _ct08(cam + " " + pic + " " + _s(s.get("style")), sid, out, "分镜文本")
+            _ct12_units(cam + " " + pic, sid, out, "分镜文本")
 
         _check_ref(p.get("reference"), "CT06", gid, out, "组 {}".format(gid))
+
+    # CT11 首组前 2 秒：钩子要落在第一个画面里，不是落在整片任何角落
+    groups = data.get("groups") or []
+    if groups:
+        head = _head_text(groups[0], 2.0)
+        if head and not any(w in head for w in HOOK_FEATURE):
+            out.append({"level": "warning", "code": "CT11", "ref": groups[0].get("no") or "-",
+                        "msg": "首组前 2 秒没有钩子特征（黑场/微距/移焦/静默/高速入画/撞/摔/耳光…）——48 要求第一个画面就有异常"})
     return out
 
 
