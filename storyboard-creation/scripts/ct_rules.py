@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""grokfilm 技法层规则 CT01–CT12（两个技能共用同一份实现）
+"""grokfilm 技法层规则 CT01–CT15（两个技能共用同一份实现）
 
 被 storyboard-creation/scripts/verify.py 与 keyword-script-creation/scripts/verify.py 导入。
 两份文件内容必须完全一致（改规则请两边同步，见各自 README「技法层规则」）。
@@ -22,11 +22,16 @@
     CT10 光影四件套             —— 缺色温 K 或光比 1:n（error）；缺光位/光质（warning）
     CT11 钩子落位               —— 钩子写法混进运镜字段（error）；首组首镜 2 秒内无钩子特征、手法定式写进机位列（warning）
     CT12 英制单位               —— ft/inch/mph 等混进中文参数（error）
+    CT13 台词余量               —— 台词说完到切点不足 0.6 秒（warning，49 §三）
+    CT14 运动轴种类             —— 全集运镜少于 4 种运动轴（warning，49 §五）
+    CT15 时长雷同               —— 相邻 3 个组/单元时长完全一样（warning，49 §二）
 
     分层说明：CT09/CT10 只作用于关键词层（keywords 的 params/movement/light/shots），
     分镜层按 45 §4「分镜层禁量化」不查运镜量化与光影数值。
     CT11 两层都查但口径不同：关键词层看 groups[0] 的 0–2 秒，分镜层看 units[0] 的 0–2 秒
     （镜头时长字段 keyword 层叫 dur、storyboard 层叫 duration，_head_text 两者都认）。
+    CT13 只在关键词层（台词挂在镜头 dialogue 上）；CT14 只在关键词层（movement 是参数槽）；
+    CT15 两层都查（关键词看 groups[].duration，分镜看 units[].duration）。
 """
 
 import re
@@ -307,10 +312,88 @@ def _ct12_units(value, ref, out, where):
                     "msg": "{}里出现英制单位『{}』——换成米/厘米（1ft≈0.3 米）".format(where, m.group(0).strip())})
 
 
+#: CT13 台词之后留的余量：台词说完到切点，至少 0.6 秒（49 §三）
+TAIL_MIN = 0.6
+SPEECH_CPS = 2.25
+
+_PUNCT = "，。！？、；：…—－·「」『』“”‘’（）《》〈〉,.!?;:'\"()"
+
+
+def _speech_chars(text):
+    """数台词字数：去掉「角色（语气，语速）：」前缀、标点与空白，剩下的才是占时间的字。"""
+    body = _s(text)
+    for sep in ("：", ":"):
+        if sep in body:
+            body = body.rsplit(sep, 1)[1]
+            break
+    return len([c for c in body if c not in _PUNCT and not c.isspace()])
+
+
+#: CT13/CT14/CT15：节奏与可读性（49），只给 warning——节奏是判断，不是硬门
+def _ct13_tail(gid, group, out):
+    """台词说完到这一组结束，至少留 0.6 秒余量（49 §三）。
+
+    按组算，不按镜算：一组就是一次生成、一个切点；台词经常跨镜说完，
+    拿单镜时长去卡台词会全员误报。
+    """
+    speech = 0
+    for s in (group.get("shots") or []):
+        speech += _speech_chars(s.get("dialogue"))
+    if not speech:
+        return
+    try:
+        dur = float(group.get("duration") or group.get("dur") or 0)
+    except (TypeError, ValueError):
+        return
+    if dur <= 0:
+        return
+    need = speech / SPEECH_CPS
+    gap = dur - need
+    if gap < TAIL_MIN:
+        out.append({"level": "warning", "code": "CT13", "ref": gid,
+                    "msg": "台词共 {} 字约 {:.1f} 秒，这一组只有 {:.1f} 秒——台词后至少留 {:.1f} 秒余量（49 §三）".format(
+                        speech, need, dur, TAIL_MIN)})
+
+
+def _ct14_axes(groups, out):
+    """一集里的运动轴种类：少于 4 种就是「一个镜头运动走到底」（49 §五）。"""
+    if len(groups or []) < 5:
+        return
+    fams = set()
+    for g in groups:
+        for s in (g.get("shots") or []):
+            fams |= _move_families(_s(s.get("cam")))
+    if len(fams) < 4:
+        out.append({"level": "warning", "code": "CT14", "ref": "-",
+                    "msg": "全集运镜只有 {} 种运动轴（{}）——49 §五 要求 ≥4 种，另给一个招牌镜".format(
+                        len(fams), "/".join(sorted(fams)) or "固定")})
+
+
+def _ct15_same_dur(items, key, ref_of, out, where):
+    """相邻 N 个时长完全一样 → 一个速度走到底（49 §二 D）。"""
+    durs = []
+    for it in items or []:
+        try:
+            durs.append(round(float(it.get(key) or 0), 2))
+        except (TypeError, ValueError):
+            durs.append(0.0)
+    run = 1
+    for k in range(1, len(durs)):
+        if durs[k] > 0 and durs[k] == durs[k - 1]:
+            run += 1
+            if run == 3:
+                out.append({"level": "warning", "code": "CT15", "ref": ref_of(items[k]),
+                            "msg": "{}连续 3 个以上时长都是 {} 秒——49 §二 要求快慢交替，别一个速度走到底".format(
+                                where, durs[k])})
+                return
+        else:
+            run = 1
+
+
 # ---------------------------------------------------------------- 分镜层
 
 def check_storyboard(data):
-    """分镜层校验：CT01/CT03/CT05/CT06/CT07/CT08/CT11/CT12。返回列表。"""
+    """分镜层校验：CT01/CT03/CT05/CT06/CT07/CT08/CT11/CT12/CT15。返回列表。"""
     out = []
     for u in (data.get("units") or []):
         uid = _s(u.get("id")) or "?"
@@ -349,6 +432,7 @@ def check_storyboard(data):
             out.append({"level": "warning", "code": "CT11", "ref": uid0,
                         "msg": "首单元前 2 秒没有钩子特征（微距/黑场炸光/高速入画/撞/摔/耳光…）"
                                "——46 要求第一个画面就有异常，首镜压到 ≤2 秒"})
+    _ct15_same_dur(units, "duration", lambda u: _s(u.get("id")) or "?", out, "单元")
     return out
 
 
@@ -408,6 +492,12 @@ def check_keyword(data):
             _ct12_units(cam + " " + pic, sid, out, "分镜文本")
 
         _check_ref(p.get("reference"), "CT06", gid, out, "组 {}".format(gid))
+        _ct13_tail(gid, g, out)
+
+    # CT14 全集运动轴太少 / CT15 相邻组时长雷同（49 §二、§五）
+    _ct14_axes(data.get("groups"), out)
+    _ct15_same_dur(data.get("groups"), "duration",
+                   lambda g: _s(g.get("no")) or "?", out, "组")
 
     # CT11 首组前 2 秒：钩子要落在第一个画面里，不是落在整片任何角落
     groups = data.get("groups") or []

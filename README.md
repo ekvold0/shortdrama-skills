@@ -67,6 +67,8 @@ Copy-Item -Recurse .\storyboard-creation,.\keyword-script-creation,.\drama-pipel
 | 开场钩子 | 写在首镜**画面内容**列，时长 ≤ 2 秒 | 写进 0.0—2.0 秒那一段的七字段正文 |
 | 时长 | 单元 4–15 秒，单镜上限按模式 | 组 4–15 秒，时间轴 0.0 起、0.1 秒精度 |
 | 技法名 | 中文技法名，不写英文、不写典故 | 先按写法库定写法，再按档位降维成参数 |
+| 节奏 | 整集单元时长曲线；单镜节奏锚（45/48） | 整集组时长曲线＋台词余量＋运动轴种类（49） |
+| 表演 | 动作三拍落在「画面内容」，不写参数 | 动作三拍物理化拆解，接触点与支撑脚写进正文（52） |
 
 分镜层写数字会把导演该定的表演写成死参数，关键词层不写数字则模型就是随机打光、随机推镜。
 
@@ -76,14 +78,16 @@ Copy-Item -Recurse .\storyboard-creation,.\keyword-script-creation,.\drama-pipel
 storyboard-creation/
   SKILL.md              技能主体：何时用、怎么做、交付物清单
   references/           内核、覆盖层、竖屏/横屏/短篇三种模式、表情与台词库、技法 300 条、范例、自检清单
-                        写法库：43 运镜选型 / 44 打光选型 / 46 开场钩子 / 47 类型分镜配比（分镜层口径）
+                        写法库：43 运镜选型 / 44 打光选型 / 45 表演与动作衔接 /
+                                46 开场钩子 / 47 类型分镜配比 / 48 节奏与剪辑（分镜层口径）
   templates/            六份交付物模板（梗概/结构/座位图/角色声线/生成单元/自检）
   scripts/              build_xlsx.py、verify.py、ct_rules.py、cine_tech.json（技法库副本）
 
 keyword-script-creation/
   SKILL.md
   references/           总纲红线、裁决要求、三种模式、画面参数、技法到参数、正向/反向提示词、音效、自检
-                        写法库：41 运镜库 / 42 打光库 / 48 开场钩子 / 55 类型成品提示词（关键词层口径）
+                        写法库：41 运镜库 / 42 打光库 / 48 开场钩子 / 49 节奏与可读性 /
+                                52 表演三拍与道具 / 55 类型成品提示词（关键词层口径）
   templates/            序列组字段模板、总览表、自检清单、数据 schema、交付物清单
   lib/                  att3_face/att4_dialogue/att5_sound/att6_edit 四个生成库 + cine_tech
   scripts/              ingest.py、build_xlsx.py、verify.py、ct_rules.py
@@ -94,7 +98,7 @@ drama-pipeline-gate/
   scripts/              gate.py（六个子命令）、anchors.py（人物锚点单一源模板）
 ```
 
-## 机器校验：CT01—CT12
+## 机器校验：CT01—CT15
 
 两个技能各带一份同源的 `scripts/ct_rules.py`，由 `verify.py` 调用，`--strict` 时只有 error 会让退出码变 1，warning 不挡交付。
 
@@ -109,6 +113,9 @@ drama-pipeline-gate/
 | CT10 | 光影缺色温 K 或光比 → error；缺光位/光质 → warning | 混合 | 关键词 |
 | CT11 | 首组（首单元）前 2 秒没有钩子特征；钩子写进运镜/机位列 | warning | 两层 |
 | CT12 | 出现英制单位（ft/inch/mph） | error | 两层 |
+| CT13 | 台词说完到组末不足 0.6 秒 | warning | 关键词 |
+| CT14 | 一集运动轴种类 <4（给了很多组却只用一种运镜） | warning | 关键词 |
+| CT15 | 相邻 3 个组/单元时长完全一样（一个速度走到底） | warning | 两层 |
 
 改了 `ct_rules.py` 记得两边同步复制，否则一边过的稿子另一边被拦。
 
@@ -119,7 +126,7 @@ drama-pipeline-gate/
 
 ## 更新记录
 
-见 [CHANGELOG.md](CHANGELOG.md)。最近一次是 **2026-11-11**：接入八份写法库（关键词 41/42/48/55、分镜 43/44/46/47），机器校验扩到 CT09–CT12。发版与打 tag 的流程见 [RELEASE.md](RELEASE.md)。
+见 [CHANGELOG.md](CHANGELOG.md)。最近一次是 **2026-11-12**：从 lemo-opuscar 补四份写法库（关键词 49 节奏与可读性、52 表演三拍；分镜 45 表演与动作衔接、48 节奏与剪辑），机器校验扩到 CT13–CT15。上一次 **2026-11-11**：接入八份写法库（关键词 41/42/48/55、分镜 43/44/46/47），扩到 CT09–CT12。发版与打 tag 的流程见 [RELEASE.md](RELEASE.md)。
 
 ## 数据来源与许可
 
