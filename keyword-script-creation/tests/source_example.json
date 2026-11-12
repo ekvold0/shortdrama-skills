@@ -1,0 +1,86 @@
+{
+ "schema": "source/1",
+ "script": {
+  "lines": [
+   {
+    "type": "dialogue",
+    "speaker": "王桂兰",
+    "paren": "",
+    "text": "我说，小伙子，让个座。"
+   },
+   {
+    "type": "dialogue",
+    "speaker": "王桂兰",
+    "paren": "",
+    "text": "我站不住了，让让。"
+   },
+   {
+    "type": "dialogue",
+    "speaker": "王桂兰",
+    "paren": "",
+    "text": "现在的年轻人，装听不见。"
+   },
+   {
+    "type": "dialogue",
+    "speaker": "林晓",
+    "paren": "",
+    "text": "我没装。"
+   },
+   {
+    "type": "dialogue",
+    "speaker": "王桂兰",
+    "paren": "",
+    "text": "你让不让？"
+   },
+   {
+    "type": "dialogue",
+    "speaker": "林晓",
+    "paren": "",
+    "text": "我买了票。"
+   },
+   {
+    "type": "dialogue",
+    "speaker": "王桂兰",
+    "paren": "",
+    "text": "票？你这位置，我坐了三年。"
+   },
+   {
+    "type": "dialogue",
+    "speaker": "林晓",
+    "paren": "",
+    "text": "您坐。"
+   }
+  ]
+ },
+ "storyboard": {
+  "units": [
+   {
+    "unit": "S03-XZ-001",
+    "shots": [
+     "001",
+     "002",
+     "003",
+     "004"
+    ]
+   },
+   {
+    "unit": "S03-XZ-002",
+    "shots": [
+     "001",
+     "002",
+     "003"
+    ]
+   },
+   {
+    "unit": "S03-XZ-003",
+    "shots": [
+     "001",
+     "002",
+     "003",
+     "004",
+     "005"
+    ]
+   }
+  ]
+ }
+}

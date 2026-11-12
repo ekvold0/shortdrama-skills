@@ -1,0 +1,25 @@
+{
+  "schema": "kwdata/1",
+  "meta": {"note": "跨表校验负例夹具：故意漏一镜、改时长、改景别、删台词、组时长对不上"},
+  "story": {"title": "跨表夹具（坏）"},
+  "groups": [
+    {
+      "no": "S01-XZ-001",
+      "unit": "U1",
+      "duration": 9.0,
+      "shots": [
+        {"id": "001", "size": "MS", "dur": 2.0, "dialogue": "王桂兰（平静，语速约每秒2.25字）：让个座。"},
+        {"id": "002", "size": "FS", "dur": 3.0, "dialogue": ""}
+      ]
+    },
+    {
+      "no": "S01-XZ-002",
+      "unit": "U2",
+      "duration": 5.5,
+      "shots": [
+        {"id": "001", "size": "MCU", "dur": 3.0, "dialogue": ""},
+        {"id": "002", "size": "ECU", "dur": 2.5, "dialogue": ""}
+      ]
+    }
+  ]
+}

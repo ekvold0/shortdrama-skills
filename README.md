@@ -139,4 +139,4 @@ drama-pipeline-gate/
 ## 说明
 
 - 技能里提到的"第 X 集"没有固定格式，按你的项目命名来。
-- 原开发时的 `tests/` 目录依赖本机路径与原始素材，未包含在仓库里；改脚本后请自行用真实项目跑一遍。
+- 回归测试在 `keyword-script-creation/tests/`：`python tests/run_all.py`。它会重建四库（需本机有规范 docx，缺失时自动跳过）、构建并校验竖屏与短篇样例、检验台词覆盖、跨表正负例。真实剧本的 ingest 产物（`tests/source_03.json` 等）不在仓库里。

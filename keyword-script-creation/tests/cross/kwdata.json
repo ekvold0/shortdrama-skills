@@ -1,0 +1,26 @@
+{
+  "schema": "kwdata/1",
+  "meta": {"note": "跨表校验正例夹具：关键词侧，与 tests/cross/storyboard.json 逐镜对齐"},
+  "story": {"title": "跨表夹具"},
+  "groups": [
+    {
+      "no": "S01-XZ-001",
+      "unit": "U1",
+      "duration": 9.0,
+      "shots": [
+        {"id": "001", "size": "MS", "dur": 2.0, "dialogue": "王桂兰（平静，语速约每秒2.25字）：让个座。"},
+        {"id": "002", "size": "CU", "dur": 3.5, "dialogue": ""},
+        {"id": "003", "size": "MCU", "dur": 3.5, "dialogue": "王桂兰（拔高音量）：我站不住了。"}
+      ]
+    },
+    {
+      "no": "S01-XZ-002",
+      "unit": "U2",
+      "duration": 6.0,
+      "shots": [
+        {"id": "001", "size": "MCU", "dur": 3.0, "dialogue": ""},
+        {"id": "002", "size": "ECU", "dur": 3.0, "dialogue": "林晓（低声）：耳朵好使。"}
+      ]
+    }
+  ]
+}
