@@ -17,6 +17,8 @@
 
 闸门是三个里唯一"会拦人"的：红灯 ≠ 0 不许交付，也不许先交付后补跑。
 
+- 跨表校验：分镜稿与关键词稿都有时，跑 `python scripts/crosscheck.py --storyboard 分镜.json --keyword kwdata.json` —— X01–X07 查跨表错位（漏镜/多镜/秒数/景别/台词）。
+
 ## 安装
 
 这些技能就是带 YAML frontmatter 的 `SKILL.md` 目录，任何按该约定加载技能的 agent 都能用（DSH、Claude Code 等）。把三个目录整体拷到你的技能目录即可：
