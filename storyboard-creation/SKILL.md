@@ -146,6 +146,7 @@ cine_tech.allowed(("T1", "T2"))          # 209 条可投池
 **工具**
 - 写完一批先跑 `scripts/verify.py` 校验（字段/账目/镜号/违禁词/语速/情绪分级）。
 - 校验通过后再跑 `scripts/build_xlsx.py` 生成 Excel 交付件。
+- 关键词稿已有时，再跑 `scripts/crosscheck.py --storyboard <本集 source.json> --keyword <关键词 kwdata.json>`：两边镜数、秒数、景别、台词对不上就在这里现形（X02/X03 硬错，X04–X07 账目警告）。
 - 数据格式与命令见 `scripts/README.md`。
 
 **命名**：`{剧名}_S{集号}_分镜_v{n}.xlsx`；单文件多集时用 `{剧名}_S{起}-S{止}_分镜_v{n}.xlsx`。
@@ -254,7 +255,8 @@ storyboard-creation/
 │   ├── 05-AI生成单元模板.md
 │   └── 06-自检记录表.md
 └── scripts/
-    ├── verify.py                  ← 校验器（含 CT01–CT12 技法层与写法层规则）
+    ├── verify.py                  ← 校验器（含 CT01–CT15 技法层与写法层规则）
+    ├── crosscheck.py              ← 跨表校验（分镜（↔）关键词，X01–X07）
     ├── ct_rules.py                ← 技法层规则实现（与关键词技能同源，两份须一致）
     ├── cine_tech.json             ← grokfilm 300 条技法（只读副本）
     ├── build_xlsx.py              ← Excel 交付件生成

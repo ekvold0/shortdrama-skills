@@ -80,7 +80,12 @@ python scripts/ingest.py --script <剧本.docx> --storyboard <分镜.xlsx> --out
 python scripts/verify.py work/<片名>_S03_kwdata.json --strict
 ```
 error 清零；warning 逐条说明。修完重跑，直到干净。
-技能自身改过脚本后，跑 `python tests/run_all.py` 回归（四库 280 条、竖屏样例、短篇夹具、覆盖检查、真实分镜 ingest）。
+手上已有这集的**分镜 JSON**（分镜技能的 ingest 产物，或分镜表 units）时，再跑一次跨表校验——两边镜数、秒数、景别、台词对不上就在这里现形：
+```bash
+python scripts/crosscheck.py --storyboard <分镜 JSON> --keyword work/<片名>_S03_kwdata.json
+```
+镜号按位置比（关键词镜号每组从 001 重数），X02/X03 是硬错（漏镜/多镜），X04–X07 是账目警告。
+技能自身改过脚本后，跑 `python tests/run_all.py` 回归（四库 280 条、竖屏样例、短篇夹具、覆盖检查、跨表正负例、真实分镜 ingest）。
 
 ### 第 8 步 · 生成交付件
 ```bash
@@ -196,7 +201,8 @@ keyword-script-creation/
 │   ├── build_xlsx.py             kwdata.json → 交付 Excel（5 sheet + 技法映射）
 │   ├── ct_rules.py               技法层与写法层规则 CT01–CT15（与分镜技能同源）
 │   ├── README.md                 数据格式与技法层规则
-│   └── verify.py                 40+ 条机器校验 + CT01–CT15
+│   ├── verify.py                 40+ 条机器校验 + CT01–CT15
+│   └── crosscheck.py             跨表校验（分镜（↔）关键词，X01–X07）
 ├── examples/
 │   ├── example_kwdata.json       3 组竖屏样例（源数据）
 │   ├── 示例_关键词脚本.xlsx        上面这组数据生成的成品
