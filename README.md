@@ -1,4 +1,4 @@
-﻿# shortdrama-skills
+# shortdrama-skills
 
 把一个剧本变成"喂给 AI 视频工具能照着生成"的交付物，并且能验收它到底有没有照着生成——三个 agent skill，串起来是一条完整产线。
 
@@ -37,6 +37,7 @@ Copy-Item -Recurse .\storyboard-creation,.\keyword-script-creation,.\drama-pipel
 
 - Python 3.10+，`openpyxl`（生成/读取 xlsx）
 - 素材回读（`gate.py assets`）需要 `ffmpeg`：取 `GATE_FFMPEG` 环境变量 → `imageio-ffmpeg` → PATH
+- 切镜更准要 `pip install scenedetect opencv-python-headless`（可选；没装则退回 ffmpeg 场景分数，报告里会写明走的哪条引擎）
 - 画布回读（`gate.py readback`）需要能访问即梦画布链接的网络环境
 
 ## 快速开始
@@ -57,6 +58,10 @@ Copy-Item -Recurse .\storyboard-creation,.\keyword-script-creation,.\drama-pipel
    ```
 
    退出码非 0 就是有红灯，逐条修完再跑。
+
+   `assets` 回读四件事：时长偏差、画幅、**黑帧/空白帧（FAIL）**、**镜数与镜长（待核）**。
+   镜数是切镜算出来的，AI 生成的运动会让它偏多，所以只作提示不判 FAIL；黑帧是客观缺陷，直接 FAIL。
+   改过阈值或升级过依赖，跑 `python drama-pipeline-gate/scripts/selftest.py`（自己造素材验切镜/黑帧/账目）。
 
 ## 两个写法层：分镜层不写数，关键词层必须写数
 
@@ -97,7 +102,7 @@ keyword-script-creation/
 
 drama-pipeline-gate/
   SKILL.md              什么时候必须跑、阈值、交付说明要写什么、已知边界
-  scripts/              gate.py（六个子命令）、anchors.py（人物锚点单一源模板）
+  scripts/              gate.py（六个子命令）、anchors.py（人物锚点单一源模板）、selftest.py（切镜/黑帧/账目自检）
 ```
 
 ## 机器校验：CT01—CT15
@@ -128,7 +133,7 @@ drama-pipeline-gate/
 
 ## 更新记录
 
-见 [CHANGELOG.md](CHANGELOG.md)。最近一次是 **2026-11-12**：从 lemo-opuscar 补四份写法库（关键词 49 节奏与可读性、52 表演三拍；分镜 45 表演与动作衔接、48 节奏与剪辑），机器校验扩到 CT13–CT15。上一次 **2026-11-11**：接入八份写法库（关键词 41/42/48/55、分镜 43/44/46/47），扩到 CT09–CT12。发版与打 tag 的流程见 [RELEASE.md](RELEASE.md)。
+见 [CHANGELOG.md](CHANGELOG.md)。最近一次是 **2026-11-19**：闸门脚本装回仓库、素材回读真的能回读——切镜改用 PySceneDetect（HSV 加权，「红→绿」这种亮度几乎相同的切点不再漏）、新增黑帧判定与 `selftest.py`、`build_xlsx.py` 改 EP07 音频口径（样例 11 条红降到 0）、41 运镜库补「速度／缓动」十词。上一次 **2026-11-12**：从 lemo-opuscar 补四份写法库（关键词 49 节奏与可读性、52 表演三拍；分镜 45 表演与动作衔接、48 节奏与剪辑），机器校验扩到 CT13–CT15。上一次 **2026-11-11**：接入八份写法库（关键词 41/42/48/55、分镜 43/44/46/47），扩到 CT09–CT12。发版与打 tag 的流程见 [RELEASE.md](RELEASE.md)。
 
 ## 数据来源与许可
 

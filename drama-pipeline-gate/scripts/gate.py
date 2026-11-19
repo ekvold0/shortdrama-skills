@@ -112,19 +112,103 @@ def probe(path):
     return dur, w, h, fps
 
 
-def scene_cuts(path):
+SCENE_THR = 0.35       # 镜头切换阈值（0—1）。0.35 ≈ PySceneDetect ContentDetector 默认 27/255
+SCENE_MIN_GAP = 0.5    # 两个切点最小间隔（秒）≈ min_scene_len，短于此视为同一镜内的运动
+BLACK_MIN = 0.08       # 黑场最短时长（秒），短于此是闪黑不算
+BLACK_PIX_TH = 0.10    # 黑场像素阈值
+
+
+def _cut_times(path, thr=SCENE_THR):
+    """返回原始切点时间列表（不去抖）。"""
     p = subprocess.run([FF, "-hide_banner", "-i", path, "-filter_complex",
-                        "select='gt(scene,0.001)',showinfo", "-f", "null", "-"],
+                        "select='gt(scene,%s)',showinfo" % thr, "-f", "null", "-"],
                        capture_output=True, text=True, encoding="utf-8", errors="replace")
-    cuts = [float(m) for m in re.findall(r"pts_time:([\d.]+)", p.stderr)]
-    cuts = sorted(set(round(c, 2) for c in cuts))
-    n = 0
-    last = -99.0
+    return sorted(set(round(float(m), 2)
+                      for m in re.findall(r"pts_time:([\d.]+)", p.stderr)))
+
+
+def scene_cuts(path, thr=SCENE_THR, min_gap=SCENE_MIN_GAP):
+    """镜数：阈值 + 最短镜长去抖。
+
+    旧版用 gt(scene,0.001)，任何轻微运动都算一次切点（实测 5 镜的设计被切成 28 段），
+    只能当「待核」提示。改用 0.35 阈值 + 0.5 秒最小间隔后，才能拿去和脚本镜数比对；
+    仍保留 warning 语义——AI 生成的运动会持续触发切点，绝对值不可当验收依据，
+    但「脚本 4 镜、实测 12 镜」这种量级的偏差是有意义的信号。
+    """
+    cuts, n, last = _cut_times(path, thr), 0, -99.0
     for c in cuts:
-        if c - last > 0.4:
+        if c - last > min_gap:
             n += 1
             last = c
     return n
+
+
+def _scenedetect_shots(path, threshold=27.0, min_scene_len=12):
+    """用 PySceneDetect 的 ContentDetector 切镜；没装就返回 None。
+
+    它按 HSV（色相/饱和度/亮度/边缘）加权算差异，所以「红→绿」这种亮度和灰度几乎相同的
+    切点也能识别——ffmpeg 的 scene 分数只看灰度均值，实测会把红→绿的切点直接漏掉。
+    """
+    try:
+        from scenedetect import open_video, SceneManager
+        from scenedetect.detectors import ContentDetector
+    except Exception:
+        return None
+    try:
+        v = open_video(path)
+        sm = SceneManager()
+        sm.add_detector(ContentDetector(threshold=threshold, min_scene_len=min_scene_len))
+        sm.detect_scenes(v, show_progress=False)
+        return [round(b.seconds - a.seconds, 2) for a, b in sm.get_scene_list()]
+    except Exception:
+        return None
+
+
+def shot_durations(path, thr=SCENE_THR, min_gap=SCENE_MIN_GAP):
+    """按切点把成片切成镜头，返回每镜时长（秒）列表。
+
+    优先 PySceneDetect（准），没有就退回 ffmpeg（快、会漏底色相近的切点）。
+    返回值永远是时长列表；用 shot_engine(path) 看这次走的是哪条路。
+    """
+    shots = _scenedetect_shots(path)
+    if shots is not None:
+        return shots
+    dur, _, _, _ = probe(path)
+    if not dur:
+        return []
+    cuts, kept, last = _cut_times(path, thr), [], -99.0
+    for c in cuts:
+        if c - last > min_gap:
+            kept.append(c)
+            last = c
+    bounds = [0.0] + kept + [dur]
+    return [round(b - a, 2) for a, b in zip(bounds, bounds[1:]) if b - a > 0.05]
+
+
+def shot_engine():
+    """切镜引擎：scenedetect 或 ffmpeg（后者会漏亮度相近的切点）。"""
+    try:
+        import scenedetect  # noqa: F401
+        return "scenedetect"
+    except Exception:
+        return "ffmpeg"
+
+
+def black_frames(path):
+    """黑场/空白帧：返回 [(起, 止, 时长)]。
+
+    转场空白帧是本项目明确的失败项（49 §四「转场出现空白帧」），而它是客观可测的，
+    所以这里从「待核」升级为 FAIL —— 只要有 ≥0.08 秒的黑场就报。
+    """
+    p = subprocess.run([FF, "-hide_banner", "-i", path, "-vf",
+                        "blackdetect=d=%s:pix_th=%s" % (BLACK_MIN, BLACK_PIX_TH),
+                        "-an", "-f", "null", "-"],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+    out = []
+    for m in re.finditer(r"black_start:([\d.]+)\s+black_end:([\d.]+)\s+black_duration:([\d.]+)",
+                         p.stderr):
+        out.append((float(m.group(1)), float(m.group(2)), float(m.group(3))))
+    return out
 
 
 def check_assets(video_root, kw_path, json_out=None):
@@ -150,15 +234,22 @@ def check_assets(video_root, kw_path, json_out=None):
                "文件": os.path.basename(hit) if hit else "", "存在": bool(hit)}
         if hit:
             dur, w, hh, fps = probe(hit)
-            real_shots = scene_cuts(hit)
+            shots = shot_durations(hit)
+            real_shots = len(shots) if shots else scene_cuts(hit)
+            blacks = black_frames(hit)
             rec.update({"实际时长": round(dur, 2) if dur else None,
                         "偏差": round(dur - plan, 2) if dur and plan else None,
                         "实际镜数": real_shots,
+                        "镜长": "／".join("%.1f" % s for s in shots) if shots else "",
+                        "切镜引擎": shot_engine(),
+                        "黑帧": len(blacks),
+                        "黑帧位置": "；".join("%.2f—%.2fs" % (a, b) for a, b, _ in blacks[:5]),
                         "宽": w, "高": hh, "fps": round(fps, 1) if fps else None})
             plan_total += plan or 0
             act_total += dur or 0
         else:
-            rec.update({"实际时长": None, "偏差": None, "实际镜数": None, "宽": None, "高": None, "fps": None})
+            rec.update({"实际时长": None, "偏差": None, "实际镜数": None, "镜长": "",
+                        "黑帧": None, "黑帧位置": "", "宽": None, "高": None, "fps": None})
         # 判定
         fails = []
         if not rec["存在"]:
@@ -166,9 +257,14 @@ def check_assets(video_root, kw_path, json_out=None):
         else:
             if rec["偏差"] is not None and abs(rec["偏差"]) > DUR_TOL:
                 fails.append("时长超差")
-            # 镜数只做“待核”提示，不计 FAIL：ffmpeg 场景检测对运动/浅景深会过度切分
-            # （实测 5 镜的设计被切成 28 个切点），无法作为验收依据，须人评确认。
-            rec["镜数待核"] = rec["实际镜数"] != rec["计划镜数"]
+            # 镜数只做「待核」提示，不计 FAIL：AI 生成的运动/浅景深会持续触发切点，
+            # 绝对值不可当验收依据（5 镜的设计可能切出 8—12 段）；但偏差过大仍值得人看一眼。
+            diff = (rec["实际镜数"] or 0) - (rec["计划镜数"] or 0)
+            rec["镜数差"] = diff
+            rec["镜数待核"] = diff != 0
+            # 黑帧是客观缺陷（转场空白帧），直接计 FAIL
+            if rec["黑帧"]:
+                fails.append("有黑帧")
             if (rec["宽"], rec["高"]) not in RES_OK:
                 fails.append("规格不符")
         rec["自动判定"] = "PASS" if not fails else "FAIL"
@@ -182,6 +278,7 @@ def check_assets(video_root, kw_path, json_out=None):
         "总偏差": round(act_total - plan_total, 2),
         "缺素材": sum(1 for r in rows if not r["存在"]),
         "时长超差": sum(1 for r in rows if "时长超差" in r["问题"]),
+        "有黑帧": sum(1 for r in rows if "有黑帧" in r["问题"]),
         "镜数待核": sum(1 for r in rows if r.get("镜数待核")),
         "规格不符": sum(1 for r in rows if "规格不符" in r["问题"]),
         "PASS": sum(1 for r in rows if r["自动判定"] == "PASS"),

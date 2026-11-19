@@ -32,6 +32,10 @@ COLS = ["序列组编号", "时长", "画面参数", "正向提示词", "场景�
         "微观分镜", "风格细节描述补充", "音频与对白设计", "分层音效设计", "反向提示词"]
 WIDTHS = [14, 8, 50, 88, 36, 48, 34, 34, 30, 36]
 
+# 语速与标点：与 ct_rules.py 同口径（2.25 字/秒），改一处要同步改那边
+CPS = 2.25
+PUNCT = "，。！？、；：…—－·「」『』“”‘’（）《》〈〉,.!?;:'\"()"
+
 NEG_BASE = ("【基础禁用项】模糊、变形、多余手指、手指扭曲、手指粘连、文字、水印、低质量、"
             "画面闪烁、人物不一致、塑料质感、伪影、摩尔纹、过曝、死黑、字幕、logo、二维码、台标、片头片尾。")
 NEG_QUALITY = ("【画面质量禁用项】油画感、塑料质感、3D模型感、AI绘画感、卡通风格、二次元、"
@@ -208,13 +212,37 @@ def style_cell(g):
     return "\n".join(lines)
 
 
+def speech_chars(text):
+    """数字数：不计标点与空白。"""
+    return len([c for c in str(text or "") if not c.isspace() and c not in PUNCT])
+
+
+def split_speaker(dialogue):
+    """把「王桂兰（中高音，语速约每秒2.5字）：我说，让个座」拆成（说话人, 台词原文）。"""
+    s = str(dialogue or "").strip().rstrip("。")
+    for sep in ("：", ":"):
+        if sep in s:
+            who, text = s.split(sep, 1)
+            return who.strip(), text.strip()
+    return "", s
+
+
 def audio_cell(g):
+    """按 EP07 账面口径输出：一行一句台词（带字数）＋末行账目。
+
+    gate.py lint 认这一口径后，就不再要求音频行数与微观分镜行数相等；
+    实测语速也从这个（起—止）＋N字 里算，所以格式不能随手改。
+    """
     wins, _ = shot_windows(g)
     dur = float(g.get("duration", 0) or 0)
     lines = []
+    total = 0
     for s, (a, b) in zip(g.get("shots", []), wins):
         if s.get("dialogue"):
-            lines.append("（%.1f—%.1f）%s" % (a, b, s["dialogue"]))
+            who, text = split_speaker(s["dialogue"])
+            n = speech_chars(text)
+            total += n
+            lines.append("（%.1f—%.1f）【台词】%s：“%s” %d字" % (a, b, who, text, n))
     if not lines:
         lines.append("本组无对白。")
     aud = g.get("audio") or {}
@@ -226,6 +254,9 @@ def audio_cell(g):
         lines.append("【静音】%.1f—%.1f 共%.1f秒" % (dur - sil, dur, sil))
     if aud.get("note"):
         lines.append(aud["note"])
+    if total:
+        lines.append("本组台词字数 %d，语音约 %.1f 秒；组时长 %.1f 秒，留白 %.1f 秒。"
+                     % (total, total / CPS, dur, ws))
     return "\n".join(lines)
 
 
