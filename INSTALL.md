@@ -32,9 +32,28 @@ pip 装包慢或卡住时换镜像：
 
 ---
 
-## 1. 装（三选一）
+## 1. 装（选一个）
 
-### A. 下载压缩包，拷目录（最稳，不依赖 git）
+### A0. 一行装（Windows PowerShell，不依赖 git，实测 3.8 秒）
+
+```powershell
+$z="$env:TEMP\sd.zip"; $d="$env:TEMP\sd"
+iwr https://codeload.github.com/ekvold0/shortdrama-skills/zip/refs/heads/main -OutFile $z
+Expand-Archive $z $d -Force
+Copy-Item -Recurse "$d\shortdrama-skills-main\storyboard-creation","$d\shortdrama-skills-main\keyword-script-creation","$d\shortdrama-skills-main\drama-pipeline-gate" "$env:USERPROFILE\.dsh\skills\" -Force
+Remove-Item -Recurse -Force $z,$d
+```
+
+只拷三个技能目录，仓库根的 README / CHANGELOG / INSTALL / RELEASE 不会进你的技能目录。
+
+macOS / Linux 对应：
+
+```bash
+tmp=$(mktemp -d); curl -sL https://codeload.github.com/ekvold0/shortdrama-skills/tar.gz/refs/heads/main | tar xz -C "$tmp"
+mkdir -p ~/.dsh/skills && cp -r "$tmp"/shortdrama-skills-main/{storyboard-creation,keyword-script-creation,drama-pipeline-gate} ~/.dsh/skills/ && rm -rf "$tmp"
+```
+
+### A. 下载压缩包，手工拷目录（想先看看里面有什么）
 
 1. 打开 <https://github.com/ekvold0/shortdrama-skills>，`Code → Download ZIP`，解压。
 2. 把三个目录整体拷进技能目录：
