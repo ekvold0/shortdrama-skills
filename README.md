@@ -33,6 +33,8 @@ Copy-Item -Recurse .\storyboard-creation,.\keyword-script-creation,.\drama-pipel
 
 也可以只放到某个项目的 `.claude/skills/` 下，跟着仓库走。
 
+完整的安装 / 自检 / 换剧 / 升级说明见 **[INSTALL.md](INSTALL.md)**（含 pip 镜像、Python 不在 PATH 时怎么调、四种验证命令）。
+
 ## 依赖
 
 - Python 3.10+，`openpyxl`（生成/读取 xlsx）
