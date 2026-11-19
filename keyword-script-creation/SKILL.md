@@ -89,7 +89,7 @@ python scripts/crosscheck.py --storyboard <分镜 JSON> --keyword work/<片名>_
 
 ### 第 8 步 · 生成交付件
 ```bash
-python scripts/build_xlsx.py work/<片名>_S03_kwdata.json --out "F:\AI短剧\关键词脚本\<片名>\<片名>_S03_关键词_v1.xlsx"
+python scripts/build_xlsx.py work/<片名>_S03_kwdata.json --out "E:\AI短剧\关键词脚本\<片名>\<片名>_S03_关键词_v1.xlsx"
 ```
 生成 4 个 sheet（短篇 5 个，多一张全片总览）；打开检查行高/换行/无截断。
 

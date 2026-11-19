@@ -13,7 +13,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SKILL = os.path.dirname(HERE)
 PY = sys.executable
 OUT = os.path.join(HERE, "_out")
-SPEC = r"F:\AI短剧\ai关键词生成规范\即梦AI横屏短剧关键词脚本生成规范V1.5.docx"
+SPEC = r"E:\AI短剧\ai关键词生成规范\即梦AI横屏短剧关键词脚本生成规范V1.5.docx"
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 except Exception:
@@ -81,8 +81,8 @@ def main():
     assert "coverage" in p.stdout, "覆盖检查没有报出缺台词"
 
     # 5. 真实分镜 ingest（存在才跑）
-    sb = r"F:\AI短剧\分镜头脚本\《这位置我不让》\《这位置我不让》03集分镜头脚本.xlsx"
-    sc = r"F:\AI短剧\剧本\《这位置我不让》\v4\《这位置我不让》20集短剧大纲_v4.docx"
+    sb = r"E:\AI短剧\分镜头脚本\《这位置我不让》\《这位置我不让》03集分镜头脚本.xlsx"
+    sc = r"E:\AI短剧\剧本\《这位置我不让》\v4\《这位置我不让》20集短剧大纲_v4.docx"
     if os.path.exists(sb) and os.path.exists(sc):
         p = run(os.path.join(SKILL, "scripts", "ingest.py"), "--script", sc,
                 "--storyboard", sb, "--out", os.path.join(OUT, "source_03.json"))

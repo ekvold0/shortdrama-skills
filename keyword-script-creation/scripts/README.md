@@ -58,7 +58,7 @@ python scripts/crosscheck.py --storyboard 分镜.json --keyword work/S03_kwdata.
 `cine_tech.json`（300 条）是 grokfilm 技法库的**只读副本**，真源在工作区 `技法库整合/`：
 
 ```powershell
-Copy-Item 'F:\AI短剧\技法库整合\cine_tech.json' 'C:\Users\22718\.dsh\skills\<本技能>\...' -Force
+Copy-Item 'E:\AI短剧\技法库整合\cine_tech.json' 'C:\Users\22718\.dsh\skills\<本技能>\...' -Force
 ```
 
 校验器启动时会比对 `count == 300`，不一致只报警告、不阻断（避免误伤历史交付）。改数据改真源后重跑构建，勿手改副本。

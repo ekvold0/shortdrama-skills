@@ -2,7 +2,7 @@
 """从规范 DOCX 抽取附件3/4/5/6 共 280 条库，生成 lib/att*.py。
 
 用法：
-    python tests/build_libs_from_spec.py "F:\\AI短剧\\ai关键词生成规范\\即梦AI横屏短剧关键词脚本生成规范V1.5.docx"
+    python tests/build_libs_from_spec.py "E:\\AI短剧\\ai关键词生成规范\\即梦AI横屏短剧关键词脚本生成规范V1.5.docx"
 
 说明：三份规范（横屏V1.5 / 竖屏V2.5 / 短篇V1.2）的四个附件逐字相同，
 以 V1.5 为抽取源；若源文件缺失，脚本报错退出，不做降级。
@@ -166,7 +166,7 @@ def main():
     if len(sys.argv) > 1:
         src = sys.argv[1]
     else:
-        src = r"F:\AI短剧\ai关键词生成规范\即梦AI横屏短剧关键词脚本生成规范V1.5.docx"
+        src = r"E:\AI短剧\ai关键词生成规范\即梦AI横屏短剧关键词脚本生成规范V1.5.docx"
     if not os.path.isfile(src):
         sys.exit("找不到规范文件：%s" % src)
     doc = Document(src)
