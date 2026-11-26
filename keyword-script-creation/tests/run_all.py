@@ -13,7 +13,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 SKILL = os.path.dirname(HERE)
 PY = sys.executable
 OUT = os.path.join(HERE, "_out")
-SPEC = r"E:\AI短剧\ai关键词生成规范\即梦AI横屏短剧关键词脚本生成规范V1.5.docx"
+# 规范文档（用来重建四库）默认找 tests/fixtures/ 下这份；也可用环境变量指过去。
+# 找不到就跳过第一步，其余步骤不受影响。
+SPEC = os.environ.get("KW_SPEC_DOCX") or os.path.join(HERE, "fixtures", "关键词脚本生成规范.docx")
 try:
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 except Exception:
@@ -22,8 +24,9 @@ except Exception:
 
 def run(*args, expect=0):
     print("\n>>> %s" % " ".join(os.path.basename(a) if a.startswith(SKILL) else a for a in args))
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
     p = subprocess.run([PY] + list(args), cwd=SKILL, capture_output=True, text=True,
-                       encoding="utf-8", errors="replace")
+                       encoding="utf-8", errors="replace", env=env)
     tail = "\n".join((p.stdout or "").strip().splitlines()[-6:])
     if tail:
         print(tail)
@@ -80,14 +83,17 @@ def main():
             "--source", os.path.join(HERE, "source_example.json"))
     assert "coverage" in p.stdout, "覆盖检查没有报出缺台词"
 
-    # 5. 真实分镜 ingest（存在才跑）
-    sb = r"E:\AI短剧\分镜头脚本\《这位置我不让》\《这位置我不让》03集分镜头脚本.xlsx"
-    sc = r"E:\AI短剧\剧本\《这位置我不让》\v4\《这位置我不让》20集短剧大纲_v4.docx"
-    if os.path.exists(sb) and os.path.exists(sc):
+    # 5. 真实分镜 ingest（给了路径才跑；仓库里不带真实剧本）
+    sb = os.environ.get("KW_REAL_STORYBOARD", "")
+    sc = os.environ.get("KW_REAL_SCRIPT", "")
+    if sb and sc and os.path.exists(sb) and os.path.exists(sc):
         p = run(os.path.join(SKILL, "scripts", "ingest.py"), "--script", sc,
-                "--storyboard", sb, "--out", os.path.join(OUT, "source_03.json"))
+                "--storyboard", sb, "--allow-drop",
+                "--out", os.path.join(OUT, "source_03.json"))
         assert "单元列 有" in p.stdout
         print("ingest 真实分镜通过")
+    else:
+        print("跳过真实分镜 ingest：要跑就设 KW_REAL_STORYBOARD（分镜 xlsx）与 KW_REAL_SCRIPT（剧本 docx）")
 
     # 6. 跨表校验：分镜 ↔ 关键词 必须逐镜对得上
     cross = os.path.join(SKILL, "scripts", "crosscheck.py")
@@ -99,6 +105,29 @@ def main():
     for code in ("X02", "X04", "X05", "X06", "X07"):
         assert code in p.stdout, "跨表负例漏报 %s" % code
     print("跨表校验正负例通过")
+
+    # 7. CT16–CT33 正负例（图像资产层 / 分镜图 / 多镜组 / 数据契约）
+    run(os.path.join(HERE, "ct_v2_cases.py"))
+
+    # 8. 两个技能共用的文件必须一致（引擎与技法库各带一份只读副本，漂移就会出错）
+    import hashlib
+
+    def _md5(p):
+        with open(p, "rb") as fh:
+            return hashlib.md5(fh.read()).hexdigest()
+
+    pairs = [
+        (os.path.join(SKILL, "scripts", "ct_rules.py"),
+         os.path.join(os.path.dirname(SKILL), "storyboard-creation", "scripts", "ct_rules.py")),
+        (os.path.join(SKILL, "lib", "cine_tech.json"),
+         os.path.join(os.path.dirname(SKILL), "storyboard-creation", "scripts", "cine_tech.json")),
+    ]
+    for a, b in pairs:
+        if not (os.path.exists(a) and os.path.exists(b)):
+            print("跳过一致性检查（只装了一个技能）：%s" % os.path.basename(a))
+            continue
+        assert _md5(a) == _md5(b), "两份 %s 不一致：%s vs %s" % (os.path.basename(a), a, b)
+    print("跨技能副本一致：ct_rules.py / cine_tech.json")
 
     print("\n全部回归通过。")
 

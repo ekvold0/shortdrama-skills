@@ -223,6 +223,8 @@ def main():
     ap.add_argument("--script", required=True)
     ap.add_argument("--storyboard", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--allow-drop", action="store_true",
+                    help="允许剧本台词在分镜里缺失（默认视为 error，退出码 1）")
     a = ap.parse_args()
     for p in (a.script, a.storyboard):
         if not os.path.isfile(p):
@@ -298,8 +300,14 @@ def main():
             print("  - %s：%s" % (d["speaker"], d["text"][:40]))
     for n in report["notes"]:
         print("[note] " + n)
+    if missing and not a.allow_drop:
+        print("")
+        print("[error] %d 句剧本台词在分镜里找不到——分镜漏台词等于整场戏丢了。" % len(missing))
+        print("        要么补镜，要么确认这些是真的不要，再加 --allow-drop 重跑。")
+        return 1
+    return 0
     print("已写入：%s" % a.out)
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

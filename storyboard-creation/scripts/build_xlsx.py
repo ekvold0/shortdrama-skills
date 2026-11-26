@@ -56,7 +56,7 @@ def set_widths(ws, widths):
 
 def shot_table(wb, units):
     ws = wb.create_sheet("分镜表")
-    headers = ["镜号", "单元", "场次", "景别", "时长(秒)", "机位与运镜",
+    headers = ["镜号", "单元", "场次", "景别", "时长(秒)", "机位与运镜", "动作", "短镜落地",
                "画面内容与景深设计", "台词 / 音效", "情绪目标", "画面参数·参考电影"]
     ws.append(headers)
     style_header(ws)
@@ -95,15 +95,17 @@ def shot_table(wb, units):
                 sh.get("size", ""),
                 sh.get("duration", ""),
                 sh.get("camera", ""),
+                sh.get("action") or "",
+                sh.get("landing") or "",
                 sh.get("content", ""),
                 (("对白：{}\n".format(line)) if line else "") + (sound_txt or "—"),
                 sh.get("emotion", "") or u.get("emotion", ""),
                 sh.get("reference", "") or u.get("reference", ""),
             ])
 
-    set_widths(ws, [12, 8, 8, 10, 9, 26, 52, 34, 30, 18])
+    set_widths(ws, [12, 8, 8, 10, 9, 26, 34, 10, 52, 34, 30, 18])
     ws.freeze_panes = "A2"
-    ws.auto_filter.ref = "A1:J{}".format(ws.max_row)
+    ws.auto_filter.ref = "A1:L{}".format(ws.max_row)
     apply_body(ws)
 
 

@@ -1,0 +1,36 @@
+{
+  "_说明": "角色锚点单一源。阶段一只填 key/name/aliases/role，stage=names；阶段二补 anchor（可观察锚点句）与 features（readback 判红用的外形词），stage 改 look/full。生成与自检：python anchors.py init / harvest / check / status / diff。规范见 references/角色锚点两阶段_v1.md",
+  "schema": "anchors/1",
+  "project": "《剧名》",
+  "updated": "YYYY-MM-DD",
+  "script": "E:\\AI短剧\\剧本\\《剧名》\\v4\\第01集_xxx.docx",
+  "characters": [
+    {
+      "key": "C01",
+      "name": "角色名",
+      "aliases": ["别名一", "称呼二"],
+      "role": "女主",
+      "stage": "names",
+      "anchor": "",
+      "features": []
+    },
+    {
+      "key": "C02",
+      "name": "第二个角色",
+      "aliases": [],
+      "role": "女主母亲",
+      "stage": "look",
+      "anchor": "55岁，女，158cm，微胖，圆脸，法令纹深；栗色干枯卷发，发根花白；暗红底碎花的确良衬衫、黑布包（拉链头缺一半）、银镯、黑布鞋",
+      "features": []
+    },
+    {
+      "key": "C03",
+      "name": "第三个角色",
+      "aliases": [],
+      "role": "司机",
+      "stage": "full",
+      "anchor": "45岁，男，平头，鬓角灰；深蓝司机制服，肩线磨白；只通过车内后视镜出现，不入正脸，不回头",
+      "features": ["后视镜", "深蓝"]
+    }
+  ]
+}

@@ -166,9 +166,12 @@ def main():
     if len(sys.argv) > 1:
         src = sys.argv[1]
     else:
-        src = r"E:\AI短剧\ai关键词生成规范\即梦AI横屏短剧关键词脚本生成规范V1.5.docx"
+        src = (os.environ.get("KW_SPEC_DOCX")
+               or os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "fixtures", "关键词脚本生成规范.docx"))
     if not os.path.isfile(src):
-        sys.exit("找不到规范文件：%s" % src)
+        sys.exit("找不到规范文件：%s\n用法：python tests/build_libs_from_spec.py <规范.docx>\n"
+                 "或设环境变量 KW_SPEC_DOCX 指过去。" % src)
     doc = Document(src)
     data = parse(doc)
 

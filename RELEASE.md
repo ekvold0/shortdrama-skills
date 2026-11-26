@@ -18,22 +18,22 @@
 两个技能都有自带样例，红着就不要发:
 
 ```powershell
-$py = "C:\Users\22718\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe"
+$py = "<你的 python.exe 路径>"
 
 # 关键词
-cd C:\Users\22718\.dsh\skills\keyword-script-creation
+cd <技能目录>\keyword-script-creation
 & $py scripts\verify.py examples\example_kwdata.json --strict   # 期望 error 0
 & $py tests\run_all.py                                          # 期望「全部回归通过」
 
 # 分镜
-cd C:\Users\22718\.dsh\skills\storyboard-creation
+cd <技能目录>\storyboard-creation
 & $py scripts\verify.py scripts\example_storyboard.json          # 期望结论:通过
 ```
 
 改过 `ct_rules.py` 的，还要确认两份副本一致:
 
 ```powershell
-Get-FileHash C:\Users\22718\.dsh\skills\*\scripts\ct_rules.py -Algorithm SHA256 |
+Get-FileHash <技能目录>\*\scripts\ct_rules.py -Algorithm SHA256 |
   Select-Object Hash, Path
 ```
 
@@ -133,8 +133,8 @@ GET /repos/{owner}/{repo}/git/trees/main       # 文件数对不对，新增文�
 | 东西 | 原因 |
 |---|---|
 | `work/`、`tests/_out/`、`__pycache__/`、`~$*.xlsx` | 中间产物，且带本机路径 |
-| `tests/` 整个目录 | 依赖 `F:\AI短剧\` 下的原始素材，别人跑不了 |
-| `drama-pipeline-gate/SKILL.md`（本机改过时） | 本机那份指向 `F:\AI短剧\流程\`，推上去别人照着做会失败。保留远端版本 |
+| `tests/source_*.json`、`tests/_out/` | 真实剧本的 ingest 产物与中间数据，属于本机工作区（`.gitignore` 已忽略） |
+| `角色锚点.json` | 里面是具体剧的角色外貌，属于项目数据，不进仓库 |
 | 任何含 token、绝对路径、真实剧本原文的文件 | — |
 
 ## 7. 发错了怎么回滚

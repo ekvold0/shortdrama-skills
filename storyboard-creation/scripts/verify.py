@@ -28,7 +28,8 @@ import sys
 
 SIZES = ["ELS", "LS", "FS", "MS", "中近景", "MCU", "CU", "ECU", "OTS"]
 MAX_SHOT = {"vertical": 8.0, "horizontal": 10.0, "shortfilm": 15.0}
-UNIT_MIN, UNIT_MAX = 4.0, 15.0
+UNIT_MIN, UNIT_MAX = 4.0, 30.0  # V2.3：上限按最高档位（2.5 组 4-30 秒）；2.0 的 15 秒另行告警
+TIER15_MAX = 15.0  # Seedance 2.0 单组上限
 TOLERANCE = 0.05
 
 UNIT_FIELDS = ["id", "scene", "coord", "shot_id", "source", "aspect", "style",
@@ -92,7 +93,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("path")
     ap.add_argument("--json", dest="json_out", default=None)
+    ap.add_argument("--assets-root", "--root", dest="root", default=None,
+                    help="资产根目录（项目的 资产/ 目录）；给了才会核对 KB_/SCN_/AUD_ 文件是否真存在")
     args = ap.parse_args()
+    root = args.root
 
     with open(args.path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -117,6 +121,9 @@ def main():
         for key in UNIT_FIELDS:
             if key not in u or u.get(key) in (None, "", [], {}):
                 if key == "line":
+                    continue
+                # era / weather 属于全片恒定量，允许在 meta 里写一次、单元继承
+                if key in ("era", "weather") and text_of(meta.get(key)).strip():
                     continue
                 if key in ("source", "link"):
                     warns.append("单元 {} 的『{}』为空（没有内容也要显式写『无』）".format(uid, key))
@@ -153,7 +160,11 @@ def main():
         if usum < UNIT_MIN - 1e-9:
             fails.append("单元 {} 时长 {:.1f} 秒，低于 4 秒下限".format(uid, usum))
         if usum > UNIT_MAX + 1e-9:
-            fails.append("单元 {} 时长 {:.1f} 秒，超过 15 秒上限".format(uid, usum))
+            fails.append("单元 {} 时长 {:.1f} 秒，超过 {:.0f} 秒上限".format(uid, usum, UNIT_MAX))
+        elif usum > TIER15_MAX + 1e-9:
+            tier = str(u.get("tier") or u.get("model") or meta.get("tier") or meta.get("model") or "").lower()
+            if "2.5" not in tier:
+                warns.append("单元 {} 时长 {:.1f} 秒，超过 Seedance 2.0 的 15 秒上限——确要这么长就在单元里写 tier: 2.5".format(uid, usum))
 
         sound = u.get("sound")
         if isinstance(sound, dict):
@@ -189,6 +200,8 @@ def main():
                 warns.append("单元 {} 台词仅 {:.2f} 字/秒，确认是否留白过多".format(uid, speed))
 
         for key in ("timeline", "action", "emotion", "line"):
+            if key == "action" and u.get("action_derived"):
+                continue  # action 是从 content 摘录的，避免同一句被判两次
             all_text.append(text_of(u.get(key)))
         all_text.append(text_of(sound))
 
@@ -226,22 +239,30 @@ def main():
         if sorted(nums) != list(range(min(nums), min(nums) + len(nums))):
             fails.append("{} 镜号不连续（现有 {}）".format(prefix, sorted(nums)))
 
-    # 违禁表述
-    blob = "\n".join(all_text)
+    # 违禁表述（同一段文字可能同时出现在 content 与 action 里，先去重再查，避免重复计数）
+    seen, uniq = set(), []
+    for t in all_text:
+        t = text_of(t)
+        if t and t not in seen:
+            seen.add(t)
+            uniq.append(t)
+    blob = "\n".join(uniq)
+    # 豁免：语音语速「每秒 2.7 字」是合法表演提示，不算伪精确频率
+    blob_ex = re.sub(r"每秒\s*[0-9]+(?:\.[0-9]+)?\s*字", "", blob)
     for pattern, message in FORBIDDEN:
-        found = re.findall(pattern, blob)
+        found = re.findall(pattern, blob_ex)
         if found:
             fails.append("{}（命中 {} 处，如：{}）".format(
                 message, len(found), "、".join(str(s) for s in found[:3])))
 
-    # 技法层规则 CT01–CT06（实现见 ct_rules.py）
+    # 技法层规则 CT01–CT25（实现见 ct_rules.py；CT16/CT20 在分镜层，CT22/CT23/CT25 走资产门禁）
     try:
-        from ct_rules import check_storyboard, data_warnings
-        for item in check_storyboard(data) + data_warnings():
+        from ct_rules import check_storyboard, check_assets, data_warnings
+        for item in check_storyboard(data) + check_assets(data, root=root) + data_warnings():
             line = "{} {}：{}".format(item["code"], item["ref"], item["msg"])
             (fails if item["level"] == "error" else warns).append(line)
     except ImportError:
-        warns.append("ct_rules.py 未找到，跳过 CT01–CT06 技法层校验")
+        warns.append("ct_rules.py 未找到，跳过 CT01–CT25 技法层校验")
 
     # 情绪分级统计
     levels = {"A": 0, "B": 0, "C": 0}

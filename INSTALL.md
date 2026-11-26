@@ -99,20 +99,23 @@ python storyboard-creation\scripts\verify.py storyboard-creation\scripts\example
 # ③ 闸门：样例应当「红灯 0 条」
 python drama-pipeline-gate\scripts\gate.py lint keyword-script-creation\examples\示例_关键词脚本.xlsx
 
-# ④ 闸门自检：自己造假素材验切镜/黑帧，7 项全 ok
+# ④ 闸门自检：自己造假素材验切镜/黑帧/账目，9 项全 ok
 python drama-pipeline-gate\scripts\selftest.py
+
+# ⑤ 生成前投喂清单自检（不需要登录平台），应当 19 项 0 失败
+python drama-pipeline-gate\scripts\run_generate_selftest.py
 ```
 
-四条都过，说明解释器、依赖、路径都对。第 ④ 条在没有 ffmpeg 时会返回 2（什么都没验），那不是通过，是缺依赖。
+五条都过（⑤ 可选），说明解释器、依赖、路径都对。第 ④ 条在没有 ffmpeg 时会返回 2（什么都没验），那不是通过，是缺依赖。
 
-想看全量回归（会重建四库、跑竖屏与短篇样例、跑跨表正负例）：
+想看全量回归（会重建四库、跑竖屏与短篇样例、跑跨表正负例、跑 CT16–CT33 正负例、比对两个技能里的 `ct_rules.py` 副本）：
 
 ```powershell
 cd keyword-script-creation
 python tests\run_all.py
 ```
 
-它要求本机有生成规范 docx（`build_libs_from_spec.py` 里的 `F:\AI短剧\...` 默认路径），缺失时**自动跳过四库重建**，用仓库自带的 `lib/index.json`（280 条）继续跑。短篇夹具是深拷贝首组克隆出来的假片，会有 2 条 `CT14/CT15` warning，那是夹具的必然结果，不是你的稿子有问题。
+它要求本机有生成规范 docx（放在 `tests/fixtures/关键词脚本生成规范.docx`，或用环境变量 `KW_SPEC_DOCX` 指过去），缺失时**自动跳过四库重建**，用仓库自带的 `lib/index.json`（280 条）继续跑。第 5 步「真实分镜 ingest」默认跳过，要跑就设 `KW_REAL_STORYBOARD` 与 `KW_REAL_SCRIPT`。短篇夹具是深拷贝首组克隆出来的假片，会有 2 条 `CT14/CT15` warning，那是夹具的必然结果，不是你的稿子有问题。
 
 ---
 
@@ -120,9 +123,10 @@ python tests\run_all.py
 
 | 位置 | 改什么 | 不改会怎样 |
 |---|---|---|
-| `drama-pipeline-gate/scripts/anchors.py` | 人物锚点换成你的角色（外貌只写一次，所有集逐字复刻） | 人物跨集换脸 |
-| `drama-pipeline-gate/scripts/gate.py` 的 `NAMES` / `FEAT` | 人物名 → 锚点关键词的映射（现在硬编码的是林晓/王桂兰/老周/陈姐） | `anchors` 子命令对不上你的稿子 |
-| `keyword-script-creation/tests/build_libs_from_spec.py` 的 `SPEC` | 你本机规范 docx 的路径 | 只有重建四库时才需要，跑回归时缺了会自动跳过 |
+| 项目根的 `角色锚点.json`（V2.12 起，外貌唯一真值源） | `python 流程\anchors.py init --script 剧本.docx` 只登记名字；`harvest --kw 关键词.xlsx` 回捞外貌锚点；`check` 查重复/空锚点 | 人物跨集换脸；没有这张表时 `gate.py anchors` 直接报红 |
+| `drama-pipeline-gate/scripts/gate.py` 的人物特征表 | 改由 `anchors.py` 的 `features` 提供，**不用再改源码**（旧的 `NAMES`／`FEAT` 硬编码已删） | —— |
+| 关键词脚本的 `prompt` 风格包 | 整集只用一种：`modern_live`／`ancient_period`／`3d_stylized`（正文照抄 `ct_rules.style_prefix()`），用别的会报 CT28 | 每组的质感各写各的，整集不成片 |
+| `keyword-script-creation/tests/build_libs_from_spec.py` 用的规范 docx | 放 `tests/fixtures/` 或设 `KW_SPEC_DOCX` | 只有重建四库时才需要，跑回归时缺了会自动跳过 |
 
 ---
 
@@ -132,7 +136,7 @@ python tests\run_all.py
 - 方式 C 装的：面板里「刷新」→「查看更新」，确认后自动备份并更新。
 - 按版本取：<https://github.com/ekvold0/shortdrama-skills/releases>。每个 release 的说明就是当次的改动清单，与 `CHANGELOG.md` 单一真源。
 
-覆盖前留意一件事：如果你改过 `anchors.py` 或 `gate.py` 的人物映射，覆盖会把这些改动冲掉，先备份。
+覆盖前留意一件事：`角色锚点.json` 在**你的项目目录**里、不在技能目录里，覆盖技能不会冲掉它；但如果你改过技能里的脚本（`ct_rules.py`／`gate.py`／`anchors.py`），覆盖会把这些改动冲掉，先备份。
 
 ---
 

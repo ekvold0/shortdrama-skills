@@ -208,7 +208,8 @@ def check_text(d):
     refs_ban = ["同上", "同前", "同左", "见前文", "见锚点", "见上"]
     for i, g in enumerate(groups):
         gid = gid_of(g, i)
-        blob = json.dumps(g, ensure_ascii=False)
+        # 违禁词只扫正向/分镜文本：反向提示词本身就是在列禁用项（写“转场特效”“配乐”是对的）
+        blob = json.dumps({k: v for k, v in g.items() if k != "neg"}, ensure_ascii=False)
         for w in banned_prompt:
             if w in blob:
                 err("audio.bgm", gid, "出现背景音乐相关词：%s" % w)
@@ -308,6 +309,8 @@ def main():
     ap.add_argument("--source")
     ap.add_argument("--strict", action="store_true")
     ap.add_argument("--json")
+    ap.add_argument("--assets-root", "--root", dest="root", default=None,
+                    help="资产根目录（项目的 资产/ 目录）；给了才会核对 KB_/SCN_/AUD_ 文件是否真存在")
     a = ap.parse_args()
     with open(a.json_path, "r", encoding="utf-8") as f:
         d = json.load(f)
@@ -316,16 +319,17 @@ def main():
     check_groups(d)
     check_text(d)
     check_mode(d)
-    # 技法层规则 CT01–CT06（实现见 ct_rules.py）
+    # 技法层规则 CT01–CT25（实现见 ct_rules.py；CT17–CT21/CT24 在关键词层，CT22/CT23/CT25 走资产门禁）
     try:
         import ct_rules
-        for item in ct_rules.check_keyword(d) + ct_rules.data_warnings():
+        for item in (ct_rules.check_keyword(d) + ct_rules.check_assets(d, root=a.root) +
+                     ct_rules.data_warnings()):
             if item["level"] == "error":
                 err(item["code"], item["ref"], item["msg"])
             else:
                 warn(item["code"], item["ref"], item["msg"])
     except ImportError:
-        err("CT00", "-", "ct_rules.py 未找到，CT01–CT06 未执行")
+        err("CT00", "-", "ct_rules.py 未找到，CT01–CT25 未执行")
     if a.source:
         check_coverage(d, a.source)
 

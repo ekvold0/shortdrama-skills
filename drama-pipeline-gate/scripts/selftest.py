@@ -53,9 +53,12 @@ def main():
     check("4 段等长素材切成 4 镜", len(shots) == 4, "实测 %d 镜 %s" % (len(shots), shots))
     check("每镜约 2 秒", all(abs(s - 2.0) < 0.3 for s in shots), str(shots))
     check("正常素材无黑帧", gate.black_frames(even) == [], str(gate.black_frames(even)))
+    check("没有 0.2 秒以下的碎镜", all(s >= 0.2 for s in shots), str(shots))
 
     gap = os.path.join(tmp, "gap.mp4")
-    make_video(gap, [("red", 2.0), ("black", 0.5), ("blue", 2.0)])
+    # 黑段要比 SCENE_MIN_GAP 宽，否则两个切点会被去抖合并成一个（0.5 秒正好卡在
+    # `c - last > min_gap` 的边界上，不算「多切一镜」）。
+    make_video(gap, [("red", 2.0), ("black", 0.8), ("blue", 2.0)])
     blacks = gate.black_frames(gap)
     check("黑场能被抓到", len(blacks) >= 1, "%d 处 %s" % (len(blacks), blacks))
 
@@ -65,13 +68,13 @@ def main():
     vroot = os.path.join(tmp, "videos", "09集")
     os.makedirs(vroot)
     make_video(os.path.join(vroot, "S09-XZ-001_仿真.mp4"), [("red", 2.0), ("blue", 2.0)])
-    make_video(os.path.join(vroot, "S09-XZ-002_仿真.mp4"), [("green", 2.0), ("black", 0.5), ("white", 1.5)])
+    make_video(os.path.join(vroot, "S09-XZ-002_仿真.mp4"), [("green", 2.0), ("black", 0.8), ("white", 1.2)])
     summary, rows = gate.check_assets(os.path.join(tmp, "videos"), kw)
     check("素材齐、账目对", summary["缺素材"] == 0 and summary["时长超差"] == 0, str(summary))
     check("镜数：干净那组不该报待核", rows[0]["实际镜数"] == 2 and not rows[0]["镜数待核"], str(rows[0]["镜数差"]))
-    # 0.5 秒黑场刚好够一镜，所以第二组会多切出一镜 —— 这是「待核」而不是「不合格」，
-    # 镜数只提示人看一眼，真正判 FAIL 的是下面的黑帧。
-    check("镜数：带黑场那组多切一镜 → 待核 1（预期）", summary["镜数待核"] == 1, str(summary["镜数待核"]))
+    # 0.8 秒黑场够一镜（> SCENE_MIN_GAP 0.5），所以第二组会多切出一镜——这是「待核」
+    # 而不是「不合格」，镜数只提示人看一眼，真正判 FAIL 的是下面的黑帧。
+    check("镜数：多切一镜不再待核（V2.3 按「至少几镜」判）", summary["镜数待核"] == 0, str(summary["镜数待核"]))
     check("黑帧被判 FAIL", summary["有黑帧"] == 1 and summary["FAIL"] == 1, str(summary))
 
     print()

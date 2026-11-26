@@ -4,7 +4,7 @@
 
 六个子命令：
   lint     <关键词xlsx>                        —— 关键词脚本静态体检（文字风险/计数风险/画幅/时长/语速/负向覆盖）
-  anchors  <关键词xlsx ...>                    —— 人物锚点是否与 anchors.py 逐字一致
+  anchors  <关键词xlsx ...>                    —— 人物锚点是否与 角色锚点.json 逐字一致
   readback <画布链接> <关键词xlsx|目录>        —— 提示词回读：画布实际提交 vs 脚本（丢字段/特征词/文字风险/分辨率）
   assets   <素材根目录> [关键词xlsx ...]        —— 素材回读（覆盖率/时长/规格），自动判 S1—S3
   sheet    <素材根目录> <关键词xlsx> <输出xlsx> —— 生成人评表（自动列已填，人工列待判）
@@ -46,9 +46,13 @@ FF = _find_ffmpeg()
 DUR_TOL = 0.5          # 单组时长容差（秒）
 GROUP_MIN, GROUP_MAX = 4.0, 15.0
 CPS_LIMIT = 3.5        # 台词语速上限（字/秒）
-W, H = 1080, 1920
-# 生成门槛 720×1280，交付门槛 1080×1920（2026-10-27 判决）；480×854 视为不合格
-RES_OK = {(1080, 1920), (720, 1280)}
+W, H = 1080, 1920          # 竖屏默认值（烧字/拼图排版用），不代表项目画幅
+# 竖屏：生成门槛 720×1280，交付门槛 1080×1920（2026-10-27 判决）；480×854 视为不合格
+# 横屏 16:9：生成 1280×720，交付 1920×1080（V2.7）
+# 横屏 4:3：生成 960×720，交付 1440×1080（V2.7；这两档是按 16:9 等比推的，第一次跑横屏时核对）
+RES_OK = {(1080, 1920), (720, 1280),
+          (1920, 1080), (1280, 720),
+          (1440, 1080), (960, 720)}
 
 # 要求“生成文字”的风险表达——命中即红灯
 TEXT_RISK = re.compile(
@@ -114,17 +118,52 @@ def probe(path):
 
 SCENE_THR = 0.35       # 镜头切换阈值（0—1）。0.35 ≈ PySceneDetect ContentDetector 默认 27/255
 SCENE_MIN_GAP = 0.5    # 两个切点最小间隔（秒）≈ min_scene_len，短于此视为同一镜内的运动
+COLOR_THR = 0.20       # 彩色差切点阈值（0—1）：16×16 缩略图上逐帧 RGB 平均绝对差
 BLACK_MIN = 0.08       # 黑场最短时长（秒），短于此是闪黑不算
 BLACK_PIX_TH = 0.10    # 黑场像素阈值
 
 
 def _cut_times(path, thr=SCENE_THR):
-    """返回原始切点时间列表（不去抖）。"""
+    """返回原始切点时间列表（不去抖）。
+
+    两套分数取并集：
+      ① ffmpeg 的 `scene` 分数——快，但只吃灰度差，红→绿这种亮度接近的切点会漏；
+      ② 自算的彩色差——把画面缩到 16×16 比逐帧 RGB 平均差，颜色一变就抓到。
+    取并集是为了在没装 PySceneDetect 的机器上也不瞎。
+    """
     p = subprocess.run([FF, "-hide_banner", "-i", path, "-filter_complex",
                         "select='gt(scene,%s)',showinfo" % thr, "-f", "null", "-"],
                        capture_output=True, text=True, encoding="utf-8", errors="replace")
-    return sorted(set(round(float(m), 2)
-                      for m in re.findall(r"pts_time:([\d.]+)", p.stderr)))
+    cuts = set(round(float(m), 2)
+               for m in re.findall(r"pts_time:([\d.]+)", p.stderr))
+    cuts.update(_cut_times_color(path))
+    return sorted(cuts)
+
+
+def _cut_times_color(path, thr=COLOR_THR, size=16):
+    """彩色差切点：16×16 RGB 缩略图逐帧比，返回切点时间。
+
+    只在「颜色/构图整体变了」时超过阈值，所以对真人素材里的表演动作不敏感；
+    对纯色块素材（自检用的红绿蓝白）一样有效。
+    """
+    dur, _, _, fps = probe(path)
+    if not dur or not fps:
+        return []
+    p = subprocess.run([FF, "-hide_banner", "-loglevel", "error", "-i", path,
+                        "-vf", "scale=%d:%d:flags=area,format=rgb24" % (size, size),
+                        "-f", "rawvideo", "-"], capture_output=True)
+    n = size * size * 3
+    data = p.stdout
+    if len(data) < n * 2:
+        return []
+    out, prev, idx = [], data[:n], 1
+    for off in range(n, len(data) - n + 1, n):
+        cur = data[off:off + n]
+        diff = sum(abs(a - b) for a, b in zip(cur, prev)) / (n * 255.0)
+        if diff > thr:
+            out.append(round(idx / fps, 2))
+        prev, idx = cur, idx + 1
+    return out
 
 
 def scene_cuts(path, thr=SCENE_THR, min_gap=SCENE_MIN_GAP):
@@ -164,15 +203,36 @@ def _scenedetect_shots(path, threshold=27.0, min_scene_len=12):
         return None
 
 
+MIN_SHOT = 0.2         # 最短镜长（秒）：更短的片段并进前一镜，避免片尾 0.06 秒碎镜
+
+
+def _merge_short(shots, min_shot=MIN_SHOT):
+    """把碎镜（< min_shot）并进前一镜；首镜过短就并进后一镜。"""
+    out = []
+    for s in shots:
+        if out and s < min_shot:
+            out[-1] = round(out[-1] + s, 2)
+        else:
+            out.append(s)
+    if len(out) > 1 and out[0] < min_shot:
+        out[1] = round(out[0] + out[1], 2)
+        out.pop(0)
+    return out
+
+
 def shot_durations(path, thr=SCENE_THR, min_gap=SCENE_MIN_GAP):
     """按切点把成片切成镜头，返回每镜时长（秒）列表。
 
-    优先 PySceneDetect（准），没有就退回 ffmpeg（快、会漏底色相近的切点）。
-    返回值永远是时长列表；用 shot_engine(path) 看这次走的是哪条路。
+    优先 PySceneDetect（最准，HSV 加权）；没装就走 ffmpeg 灰度分 + 彩色差的并集
+    （彩色差补上了「红→绿」这类亮度几乎相同的切点）。碎镜（< 0.2 秒）一律并进前一镜。
+    用 shot_engine() 看这次走哪条。
+
+    注意：PySceneDetect 一镜到底时返回空列表（没切点），不能当「0 镜」用——
+    空列表要退回 ffmpeg 路径，由它给出「整条算 1 镜」的结果。
     """
     shots = _scenedetect_shots(path)
-    if shots is not None:
-        return shots
+    if shots:
+        return _merge_short(shots)
     dur, _, _, _ = probe(path)
     if not dur:
         return []
@@ -182,7 +242,7 @@ def shot_durations(path, thr=SCENE_THR, min_gap=SCENE_MIN_GAP):
             kept.append(c)
             last = c
     bounds = [0.0] + kept + [dur]
-    return [round(b - a, 2) for a, b in zip(bounds, bounds[1:]) if b - a > 0.05]
+    return _merge_short([round(b - a, 2) for a, b in zip(bounds, bounds[1:]) if b - a > 0.02])
 
 
 def shot_engine():
@@ -261,7 +321,10 @@ def check_assets(video_root, kw_path, json_out=None):
             # 绝对值不可当验收依据（5 镜的设计可能切出 8—12 段）；但偏差过大仍值得人看一眼。
             diff = (rec["实际镜数"] or 0) - (rec["计划镜数"] or 0)
             rec["镜数差"] = diff
-            rec["镜数待核"] = diff != 0
+            plan_n = rec["计划镜数"] or 0
+            # V2.3 口径：按「至少几镜」判。多切出来的是常态（运动/浅景深持续触发切点），
+            # 不提示；少切才是真风险（漏了节拍），或切得离谱到 3 倍以上（读数不可信）。
+            rec["镜数待核"] = plan_n > 0 and (diff < 0 or diff > plan_n * 2)
             # 黑帧是客观缺陷（转场空白帧），直接计 FAIL
             if rec["黑帧"]:
                 fails.append("有黑帧")
@@ -501,13 +564,36 @@ def verdict(xlsx_path):
 
 VARIANTS = re.compile(
     r"(深蓝涤棉工服（|黑色双肩包|小方布标|小logo|实习两字|门店圆形标志|银镯子|栗色烫卷短发|栗色枯黄卷发|深蓝发白的)")
-NAMES = ("林晓", "王桂兰", "老周", "陈姐")
+# 定义型提及里不算人名的常见词头（避免把「场景：」「镜头：」当角色）
+NOT_NAME = {
+    "场景", "镜头", "时间", "地点", "音效", "音乐", "旁白", "画外音", "字幕", "转场",
+    "黑场", "画面", "风格", "色彩", "光影", "机位", "运镜", "台词", "情绪", "动作",
+    "参考", "服装", "妆造", "道具", "单元", "组号", "时长", "景别", "备注", "注",
+    "提示", "说明", "人物", "出场", "系统", "广播", "手机", "电话", "微信", "短信",
+}
+
+
+def _norm(s):
+    """锚点比对用归一化：去空格与标点（顿号/逗号/括号写法差异不算错）。"""
+    return re.sub(r"[\s，,。；;、：:（）()【】\[\]《》<>“”\"'·…—\-]+", "", s or "")
+
+
+GROUP_PATTERN = os.environ.get("GATE_GROUP_PATTERN") or r"S(\d+)-XZ-(\d+)"
 
 
 def anchors_check(paths):
-    """逐组核对人物锚点是否与 anchors.py 逐字一致、且无旧措辞残留。"""
+    """逐组核对人物锚点是否与 角色锚点.json 一致、且无旧措辞残留。
+
+    V2.0 两阶段：
+      阶段一（角色只有名字，anchor 空）——只查「旧措辞残留」，并提示谁还没补；
+      阶段二（anchor 已补）——再多查一条「定义型提及必须复刻锚点」。
+    """
     import anchors as A
 
+    data = A.load()
+    table = A.names(data)                 # 名字/别名 → 角色
+    staged = [c.get("name", "?") for c in data.get("characters", [])
+              if c.get("stage") != "full"]
     total = ok = 0
     bad = []
     for p in paths:
@@ -518,12 +604,18 @@ def anchors_check(paths):
             text = prompt + "\n" + scene
             total += 1
             problems = []
-            # 只校验“定义型提及”（林晓（…）／林晓：…）；分镜清单里的“前排陈姐”
-            # 这类叙述性提及不计。
-            for name in NAMES:
-                canon = A.ALL.get({"林晓": "LIN", "王桂兰": "WANG", "老周": "ZHOU", "陈姐": "CHEN"}[name])
-                desc = canon.split("，", 1)[1] if "，" in canon else canon
-                if re.search(re.escape(name) + r"[（(：:]", text) and canon not in text and desc not in text:
+            # 只校验“定义型提及”（林晓（…）／林晓：…）；“前排陈姐”这类叙述性提及不计。
+            # 比对先归一化（去空格与标点），顿号/逗号/括号写法差异不算错。
+            ntext = _norm(text)
+            for name, ch in table.items():
+                canon = (ch.get("anchor") or "").strip()
+                if not canon:
+                    continue                  # 阶段一：还没写锚点，跳过一致性
+                if not re.search(re.escape(name) + r"[（(：:]", text):
+                    continue
+                nc = _norm(canon)
+                desc = _norm(canon.split("，", 1)[1]) if "，" in canon else nc
+                if nc not in ntext and (len(desc) < 12 or desc not in ntext):
                     problems.append("%s 锚点未逐字复写" % name)
             hits = sorted(set(m.group(0) for m in VARIANTS.finditer(text)))
             if hits:
@@ -534,26 +626,54 @@ def anchors_check(paths):
                 ok += 1
     print("=" * 60)
     print("锚点单一源校验：%d 集 / %d 组" % (len(paths), total))
+    print("锚点表：%s（%s）｜%d 个角色，其中 %d 个还没补完：%s"
+          % (data.get("source"), data.get("project", ""), len(data.get("characters", [])),
+             len(staged), "、".join(staged) or "无"))
     print("逐字一致：%d 组｜不一致：%d 组" % (ok, len(bad)))
     for f, gid, problems in bad[:20]:
         print("  [红] %s %s  %s" % (f, gid, " ｜ ".join(problems)))
     if len(bad) > 20:
         print("  …… 另有 %d 组" % (len(bad) - 20))
-    print("结论：%s" % ("通过" if not bad else "不通过"))
-    return 0 if not bad else 1
+    if data.get("source") == "builtin":
+        print("  [红] 正在用内置示例锚点（林晓/王桂兰/老周/陈姐），本剧角色其实没被校验。")
+        print("       先跑：python anchors.py init --script <剧本> ，把名字登记进 角色锚点.json")
+        return 1
+    if staged:
+        print("  [黄] 这些角色还没补 anchor，本轮只查了旧措辞：%s" % "、".join(staged))
+    passed = not bad
+    print("结论：%s" % ("通过" if passed else "不通过"))
+    return 0 if passed else 1
 
 
 # ---------------------------------------------------------------- 提示词回读
 CANVAS_KEY = '{"__aiCanvasDraftBffResponse"'
 SUBMIT_FIELDS = ["画面参数", "正向提示词", "场景与妆造简述", "微观分镜",
                  "风格细节补充", "音频与对白设计", "分层音效设计", "反向提示词"]
-# 人物外形特征词：脚本里出现该角色，提交文本就必须带上这些词
-FEAT = {
+# 人物外形特征词：脚本里出现该角色，提交文本就必须带上这些词。
+# V2.0 起以 角色锚点.json 的 features 为准；下面这份只是兜底示例。
+FEAT_FALLBACK = {
     "林晓": ["深蓝", "工牌", "耳机"],
     "王桂兰": ["暗红", "碎花"],
     "陈姐": ["衬衫", "短发"],
     "老周": ["后视镜"],
 }
+
+
+def feat_table():
+    """返回 {角色名: [特征词]}：优先 角色锚点.json，缺失时才用兜底示例。"""
+    try:
+        import anchors as A
+        got = A.features()
+        if got:
+            data = A.load(quiet=True)
+            pending = [c.get("name", "?") for c in data.get("characters", [])
+                       if not [x for x in (c.get("features") or []) if x]]
+            if pending:
+                print("[提示] 这些角色还没填 features，readback 跳过判红：%s" % "、".join(pending))
+            return got
+    except Exception as e:                      # 锚点表坏了不该让 readback 直接崩
+        print("[提示] 读 角色锚点.json 失败（%s），改用兜底特征词" % e)
+    return dict(FEAT_FALLBACK)
 POS_CUT = ("【反向提示词", "【通用禁用项", "禁用项】", "【画面质量禁用项】")
 
 
@@ -585,13 +705,15 @@ def fetch_canvas(url, cache=None, offline=False):
     data = obj["__aiCanvasDraftBffResponse"]["data"]
     proj = data.get("project") or {}
     subs = {}
+    miss = []
     for n in json.loads(data["draft_json"]).get("nodes") or []:
         if n.get("type") != "video":
             continue
         d = n.get("data") or {}
         title = (d.get("title") or "").strip()
-        m = re.match(r"S(\d+)-XZ-(\d+)", title)
+        m = re.match(GROUP_PATTERN, title)
         if not m:
+            miss.append(title)
             continue
         gd = d.get("generationDraft") or {}
         cs = gd.get("contentSettings") or {}
@@ -601,6 +723,10 @@ def fetch_canvas(url, cache=None, offline=False):
             "res": cs.get("resolution"), "model": cs.get("modelName"),
             "dur": cs.get("durationSeconds"),
         })
+    if miss and not subs:
+        print("[红] 画布上一个组号都没认出来（%d 个视频节点标题不匹配 %s）——"
+              "编号体系变了就用 GATE_GROUP_PATTERN 覆盖" % (len(miss), GROUP_PATTERN),
+              file=sys.stderr)
     return proj, subs
 
 
@@ -622,6 +748,7 @@ def readback(url, kw_paths, out=None, offline=False, cache=None):
           % (proj.get("name"), len(subs), sum(len(v) for v in subs.values())))
 
     rows, red, amber = [], [], []
+    feattab = feat_table()
     for p in kw_paths:
         _, groups = load_kw(p)
         for g in groups:
@@ -647,7 +774,7 @@ def readback(url, kw_paths, out=None, offline=False, cache=None):
             for h in lost:
                 red.append((sid, "丢字段", h))
             feats = []
-            for name, toks in FEAT.items():
+            for name, toks in feattab.items():
                 if name in g.get("正向提示词", "") or name in g.get("场景与妆造简述", ""):
                     miss = [t for t in toks if t not in txt]
                     feats.append("%s%s" % (name, "✓" if not miss else "✗" + "".join(miss)))
