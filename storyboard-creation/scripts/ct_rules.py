@@ -559,6 +559,7 @@ def check_storyboard(data):
     _ct16_record(units, out)
     _ct26_short(units, out)
     _ct27_multishot(units, out)
+    _ct35_rhythm(units, out)  # V2.13
     _ct20_layers(units, out)
     return out
 
@@ -1502,6 +1503,113 @@ def _ct29_audios(data, assets, out, root_dir=""):
                         "msg": "audios 登记了 {}，但没有任何组引用它——白抽一条".format(key)})
 
 
+
+# ------------------------------------------------------------ CT34 / CT35（V2.13）
+
+#: 场景卡里表示「光线从哪来」与「拍摄规格」的字段名（中英文都认）
+SCENE_LIGHT_KEYS = ("light", "lighting", "light_source", "光线", "光线来源", "光线与光影")
+SCENE_CAMERA_KEYS = ("camera", "camera_spec", "spec", "拍摄规格", "机位规格", "镜头规格")
+#: 没有来源的光线说法（说了等于没说）
+SOURCELESS_LIGHT = re.compile(r"(光线柔和|光线自然|自然光|柔光|光线均匀|打光自然|光线舒服)")
+
+
+def _pick_text(item, keys):
+    """按候选键取第一段非空文本（支持 str / list / dict）。"""
+    for k in keys:
+        v = item.get(k)
+        if isinstance(v, str) and v.strip():
+            return v.strip()
+        if isinstance(v, (list, tuple)) and v:
+            t = "；".join(str(x).strip() for x in v if str(x).strip())
+            if t:
+                return t
+        if isinstance(v, dict) and v:
+            t = "；".join("%s：%s" % (a, b) for a, b in v.items() if str(b).strip())
+            if t:
+                return t
+    return ""
+
+
+def _ct34_scene(data, out):
+    """CT34 场景卡三块：环境要素（不做机器校验）/ 光线从哪来 / 拍摄规格。
+
+    场景卡格式见 storyboard-creation/templates/13-场景图资产规范.md。
+    缺字段 → warning；只写「光线柔和」这类无来源词 → warning。
+    """
+    scenes = []
+    for src in (data.get("scenes"), (data.get("assets") or {}).get("scenes")):
+        for it in (src or []):
+            if isinstance(it, dict):
+                scenes.append(it)
+    if not scenes:
+        return
+    seen = set()
+    for it in scenes:
+        sid = _s(it.get("id")) or _s(it.get("name")) or _s(it.get("scene")) or "?"
+        if sid in seen:
+            continue
+        seen.add(sid)
+        light = _pick_text(it, SCENE_LIGHT_KEYS)
+        camera = _pick_text(it, SCENE_CAMERA_KEYS)
+        if not light:
+            out.append({"level": "warning", "code": "CT34", "ref": sid,
+                        "msg": "场景 {} 没写光线从哪来——场景卡第二块要写光源类型 / 来向 / 色温 / 光比"
+                               "（见 templates/13-场景图资产规范.md）".format(sid)})
+        elif SOURCELESS_LIGHT.search(light) and not re.search(r"(从|来源|自|色温|[0-9]{3,5}\s*K)", light):
+            out.append({"level": "warning", "code": "CT34", "ref": sid,
+                        "msg": "场景 {} 的光线写成「{}」——没有来源的光等于没写，补上从哪来、多少 K".format(
+                            sid, light[:18])})
+        if not camera:
+            out.append({"level": "warning", "code": "CT34", "ref": sid,
+                        "msg": "场景 {} 没写拍摄规格——写实风装 ARRI（ALEXA 35 + Signature Prime），"
+                               "非写实风写风格标签".format(sid)})
+
+
+#: 节奏反模式阈值（57-节拍与反模式 §四）
+RHYTHM_MAX_SHOTS = 8
+RHYTHM_FLAT_SPREAD = 0.3
+RHYTHM_REPEAT = 4
+
+
+def _ct35_rhythm(units, out):
+    """CT35 节奏反模式：景别连排 / 平均切镜 / 一组塞爆。
+
+    只查形（数得出来的），「该不该」这一层靠人评（references/58-构图雷区.md §三）。
+    """
+    if not units:
+        return
+    sizes = []
+    for u in units:
+        shs = [x for x in (u.get("shots") or []) if isinstance(x, dict)]
+        sizes.append(_s(shs[0].get("size")) if shs else "")
+
+    run = 1
+    for i in range(1, len(sizes) + 1):
+        same = i < len(sizes) and sizes[i] and sizes[i] == sizes[i - 1]
+        if same:
+            run += 1
+            continue
+        if run >= RHYTHM_REPEAT and sizes[i - 1]:
+            out.append({"level": "warning", "code": "CT35", "ref": "units",
+                        "msg": "连续 {} 个单元都用「{}」开场——景别强迫症，按情绪需要切不按教科书"
+                               "（57-节拍与反模式 §四·1）".format(run, sizes[i - 1])})
+        run = 1
+
+    for u in units:
+        uid = _s(u.get("id")) or "?"
+        shs = [x for x in (u.get("shots") or []) if isinstance(x, dict)]
+        if len(shs) > RHYTHM_MAX_SHOTS:
+            out.append({"level": "warning", "code": "CT35", "ref": uid,
+                        "msg": "单元 {} 塞了 {} 个镜头——超过 8 个就拆组（57 §四·3）".format(uid, len(shs))})
+        durs = [float(x.get("duration") or x.get("dur") or 0) for x in shs]
+        durs = [d for d in durs if d > 0]
+        if len(durs) >= 3 and (max(durs) - min(durs)) <= RHYTHM_FLAT_SPREAD:
+            out.append({"level": "warning", "code": "CT35", "ref": uid,
+                        "msg": "单元 {} 的 {} 个镜头时长几乎一样（{:.1f}–{:.1f} 秒）——平均切镜，"
+                               "长的留给情绪、短的给动作落点（57 §四·2）".format(
+                                   uid, len(durs), min(durs), max(durs))})
+
+
 def check_assets(data, root=None):
     """资产门禁校验：CT22 资产齐备 / CT23 参考链代际 / CT25 分镜图存在。返回列表。
 
@@ -1532,6 +1640,7 @@ def check_assets(data, root=None):
     for _m in meta_typos(data):
         out.append({"level": "warning", "code": "CT33", "ref": "meta", "msg": _m})
     _ct18_cards(data, out)
+    _ct34_scene(data, out)  # V2.13
     _ct28_style(data, data.get("assets") or {}, out)
     assets = data.get("assets")
     if not isinstance(assets, dict):

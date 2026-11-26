@@ -105,7 +105,7 @@ keyword-script-creation/
   lib/                  att3_face/att4_dialogue/att5_sound/att6_edit 四个生成库 + cine_tech
   scripts/              ingest.py、build_xlsx.py、verify.py、ct_rules.py
   examples/             一个竖屏短剧的完整示例（数据 + xlsx）
-  tests/                回归：run_all.py、ct_v2_cases.py（CT16–CT33 正负例）、fixtures/
+  tests/                回归：run_all.py、ct_v2_cases.py（CT16–CT35 正负例）、fixtures/
 
 drama-pipeline-gate/
   SKILL.md              什么时候必须跑、阈值、交付说明要写什么、已知边界
@@ -118,7 +118,7 @@ drama-pipeline-gate/
                         selftest.py（切镜/黑帧/账目自检）
 ```
 
-## 机器校验：CT00—CT33
+## 机器校验：CT00—CT35
 
 两个技能各带一份同源的 `scripts/ct_rules.py`，由 `verify.py` 调用，`--strict` 时只有 error 会让退出码变 1，warning 不挡交付。
 
@@ -139,7 +139,7 @@ drama-pipeline-gate/
 | CT14 | 一集运动轴种类 <4（给了很多组却只用一种运镜） | warning | 关键词 |
 | CT15 | 相邻 3 个组/单元时长完全一样（一个速度走到底） | warning | 两层 |
 
-### CT16—CT33（图像资产层与投喂层，V2.0—V2.12）
+### CT16—CT35（图像资产层与投喂层，V2.0—V2.13）
 
 | 码 | 查什么 | 级别 |
 |---|---|---|
@@ -159,6 +159,8 @@ drama-pipeline-gate/
 | CT31 | 首帧超过一张；首帧标在资产图上（应标分镜图）；>15 秒的组没有首帧；role 写了不认识的词 | error / warning |
 | CT32 | 提示词字数按档位：2.0 上限 4000 字、2.5 含 flash 上限 10000 字（软预算 3/4） | warning |
 | CT33 | 数据契约：缺 `schema`、`meta` 键名像笔误（如 `epsoide`）、资产 id 重复 | error / warning |
+| CT34 | 场景卡：场景没写光线从哪来（光源类型/来向/色温/光比）、只写「光线柔和」这类无来源的光、没写拍摄规格（写实装 ARRI） | warning |
+| CT35 | 节奏反模式：连续 4 个单元同一景别开场（景别强迫症）、单元内 ≥3 镜而时长极差 ≤0.3 秒（平均切镜）、单组超 8 镜 | warning |
 
 改了 `ct_rules.py` 记得两边同步复制（`tests/run_all.py` 第 8 步会自动比对两侧 hash），否则一边过的稿子另一边被拦。
 
@@ -180,5 +182,5 @@ drama-pipeline-gate/
 ## 说明
 
 - 技能里提到的"第 X 集"没有固定格式，按你的项目命名来。
-- 回归测试在 `keyword-script-creation/tests/`：`python tests/run_all.py`。它会重建四库（需本机有规范 docx，没有就设 `KW_SPEC_DOCX`，缺失时自动跳过）、构建并校验竖屏与短篇样例、检验台词覆盖、跨表正负例、CT16–CT33 正负例，并比对两个技能里 `ct_rules.py` 的副本是否一致。真实剧本的 ingest 产物不在仓库里；要跑真实分镜那一步，设 `KW_REAL_STORYBOARD` 与 `KW_REAL_SCRIPT`。
+- 回归测试在 `keyword-script-creation/tests/`：`python tests/run_all.py`。它会重建四库（需本机有规范 docx，没有就设 `KW_SPEC_DOCX`，缺失时自动跳过）、构建并校验竖屏与短篇样例、检验台词覆盖、跨表正负例、CT16–CT35 正负例，并比对两个技能里 `ct_rules.py` 的副本是否一致。真实剧本的 ingest 产物不在仓库里；要跑真实分镜那一步，设 `KW_REAL_STORYBOARD` 与 `KW_REAL_SCRIPT`。
 - 依赖：Python 3.10+、`openpyxl`、`python-docx`；闸门侧另需 `ffmpeg`（`GATE_FFMPEG` 可指定路径），切镜推荐再装 `scenedetect` + `opencv-python-headless`（没装则退回 ffmpeg 灰度+彩色差并集）。

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""CT16–CT25 正负例回归（V2.0 图像资产层）。
+"""CT16–CT35 正负例回归（V2.0 图像资产层 + V2.13 场景卡与节奏）。
 
 用法：python tests/ct_v2_cases.py
 设计原则：每条规则给一个「该报」和一个「不该报」的样例——规则只有在两边都成立时才算落地。
@@ -743,6 +743,57 @@ def case_ct33_contract():
     expect("CT33 两个场景同 id → error", ct_rules.check_assets(dup), "CT33", "error")
 
 
+
+def case_ct34_scene():
+    """CT34 场景卡：光线从哪来 + 拍摄规格。"""
+    base = {"schema": "kwdata/1"}
+    good = dict(base, scenes=[{"id": "SCN_S03_01", "image": "scenes/a.jpg",
+                               "light": "窗光自左前上方 40 度进，5600K，光比 1:8",
+                               "camera": "ARRI ALEXA 35 + Signature Prime，T2.8"}])
+    expect("CT34 光线与规格都写了 → 不报", ct_rules.check_assets(good), "CT34", "warning", want=False)
+
+    no_light = dict(base, scenes=[{"id": "SCN_S03_02", "camera": "ARRI ALEXA 35"}])
+    expect("CT34 没写光线 → warning", ct_rules.check_assets(no_light), "CT34", "warning", want=True)
+
+    no_cam = dict(base, scenes=[{"id": "SCN_S03_03", "light": "顶光，上方直下，3200K"}])
+    expect("CT34 没写拍摄规格 → warning", ct_rules.check_assets(no_cam), "CT34", "warning", want=True)
+
+    sourceless = dict(base, scenes=[{"id": "SCN_S03_04", "camera": "ARRI ALEXA 35",
+                                     "light": "光线柔和"}])
+    expect("CT34 无来源的光线 → warning", ct_rules.check_assets(sourceless), "CT34", "warning", want=True)
+
+    expect("CT34 没有 scenes 桶 → 不报", ct_rules.check_assets(dict(base)), "CT34", "warning", want=False)
+
+
+def case_ct35_rhythm():
+    """CT35 节奏反模式：景别连排 / 平均切镜 / 塞爆。"""
+    def u(uid, size, durs):
+        return {"id": uid, "duration": sum(durs),
+                "shots": [{"id": "%s-S%d" % (uid, i + 1), "size": size, "duration": d,
+                           "camera": "35mm 固定", "content": "谢听和教头对坐"} for i, d in enumerate(durs)]}
+
+    ok_units = [u("U1", "中景", [2.0, 4.0, 1.5]), u("U2", "近景", [3.0, 2.0]),
+                u("U3", "全景", [4.0, 3.0]), u("U4", "特写", [1.0, 3.5])]
+    expect("CT35 正常节奏 → 不报",
+           ct_rules.check_storyboard({"schema": "sbdata/1", "units": ok_units}), "CT35", "warning", want=False)
+
+    flat = [u("U1", "中景", [2.0, 2.1, 2.0, 2.05])]
+    expect("CT35 平均切镜 → warning",
+           ct_rules.check_storyboard({"schema": "sbdata/1", "units": flat}), "CT35", "warning", want=True)
+
+    crowded = [u("U1", "中景", [1.0] * 9)]
+    expect("CT35 一组塞 9 镜 → warning",
+           ct_rules.check_storyboard({"schema": "sbdata/1", "units": crowded}), "CT35", "warning", want=True)
+
+    same = [u("U%d" % i, "中景", [2.0, 4.0]) for i in range(1, 6)]
+    expect("CT35 连续 5 单元同景别开场 → warning",
+           ct_rules.check_storyboard({"schema": "sbdata/1", "units": same}), "CT35", "warning", want=True)
+
+    mixed = [u("U%d" % i, sz, [2.0, 4.0]) for i, sz in enumerate(["中景", "近景", "中景", "全景", "中景"], 1)]
+    expect("CT35 交替景别 → 不报",
+           ct_rules.check_storyboard({"schema": "sbdata/1", "units": mixed}), "CT35", "warning", want=False)
+
+
 def main():
     for fn in (case_ct16, case_ct20, case_ct17, case_ct17_dur, case_ct18, case_ct18_hex,
                case_ct19, case_ct21, case_ct24, case_assets, case_ct25_cover, case_no_false_red,
@@ -752,10 +803,11 @@ def main():
                case_ct17_board_typo, case_ct25_root,
                case_ct29_audios, case_ct28_prefix,
                case_ct25_shotdim, case_ct30_voice, case_ct31_roles,
-               case_ct32_prompt, case_ct33_contract):
+               case_ct32_prompt, case_ct33_contract,
+               case_ct34_scene, case_ct35_rhythm):
         print("\n--- %s" % fn.__name__)
         fn()
-    print("\n%s" % ("CT16–CT33 正负例全部通过。" if not FAILS
+    print("\n%s" % ("CT16–CT35 正负例全部通过。" if not FAILS
                     else "失败 %d 项：%s" % (len(FAILS), "；".join(FAILS))))
     return 0 if not FAILS else 1
 

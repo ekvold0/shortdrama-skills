@@ -25,6 +25,11 @@ import os
 import re
 import sys
 
+# 子进程/管道里 stdout 默认走本地编码（GBK），自检按 UTF-8 解码会读到乱码，统一显式设成 UTF-8
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
